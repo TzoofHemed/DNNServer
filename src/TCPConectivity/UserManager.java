@@ -1,16 +1,13 @@
 package TCPConectivity;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import MessagesSwitch.InputHandler;
 import dnn.message.DnnMessage;
 
 /**
@@ -28,12 +25,15 @@ public class UserManager extends Thread {
     private boolean running;
     // used to notify certain user actions like receiving a message or disconnect
     private UserManagerDelegate managerDelegate;
+    
+    private InputHandler inputHandler;
 
     public UserManager(Socket socket, UserManagerDelegate managerDelegate) {
         this.user = new User();
         this.socket = socket;
         this.managerDelegate = managerDelegate;
         running = true;
+      
     }
 
     public User getUser() {
@@ -69,26 +69,27 @@ public class UserManager extends Thread {
 	                if(!(messageObject instanceof DnnMessage)){
 	                	throw new Exception("Wrong message type received from client");
 	                }
-	                //TODO: move this to handler class
-	                DnnMessage.MessageType messageType = ((DnnMessage)messageObject).getMessageType();
-	                switch(messageType){
-	                case TEST:
-	                	String message = (String)((DnnMessage)messageObject).getContent();
-	                	
-//	                	if (hasCommand(message)) {
-//	                        continue;
+	                
+	                inputHandler.newMessageInput((DnnMessage)messageObject);
+	                
+//	                switch(messageType){
+//	                case TEST:
+//	                	String message = (String)((DnnMessage)messageObject).getContent();
+//	                	
+////	                	if (hasCommand(message)) {
+////	                        continue;
+////	                    }
+////	    
+//	                	
+//	                    if (message != null && managerDelegate != null) {
+//	                        user.setMessage(message);
+//	                        // notify message received action
+//	                        managerDelegate.messageReceived(user, null);
 //	                    }
-//	    
-	                	
-	                    if (message != null && managerDelegate != null) {
-	                        user.setMessage(message);
-	                        // notify message received action
-	                        managerDelegate.messageReceived(user, null);
-	                    }
-	                	break;
-	    			default:
-	    				break;
-	                }
+//	                	break;
+//	    			default:
+//	    				break;
+//	                }
             }
 
             
@@ -123,15 +124,15 @@ public class UserManager extends Thread {
 
     }
         
-//        public void handleMessage(){
-//        	try{
-//
-//
-//        	} catch (Exception e) {
-//        		System.out.println("ServerError: " + e.getMessage());
-//        		e.printStackTrace();
-//        	}
-//        }
+        public void handleMessage(){
+        	try{
+
+
+        	} catch (Exception e) {
+        		System.out.println("ServerError: " + e.getMessage());
+        		e.printStackTrace();
+        	}
+        }
 
     /**
      * Close the server

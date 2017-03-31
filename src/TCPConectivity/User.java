@@ -3,7 +3,6 @@ package TCPConectivity;
 /**
  * Encapsulates a user entity, having its port and username
  * <p/>
- * Created by catalin on 12/30/13.
  */
 public class User {
 
