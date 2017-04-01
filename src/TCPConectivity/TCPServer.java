@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
+import MessagesSwitch.MessagesSwitch;
 import dnn.message.DnnHelloMessage;
 import dnn.message.DnnMessage;
 
@@ -21,15 +22,17 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
     private OnMessageReceived messageListener;
     private ServerSocket serverSocket;
     private ArrayList<UserManager> connectedUsers;
+    private MessagesSwitch mMessagesSwitch;
 
     /**
      * Constructor of the class
      *
      * @param onMessageReceived listens for the messages
      */
-    public TCPServer(TCPServer.OnMessageReceived onMessageReceived) {
+    public TCPServer(TCPServer.OnMessageReceived onMessageReceived, MessagesSwitch messagesSwitch) {
         this.messageListener = onMessageReceived;
         connectedUsers = new ArrayList<UserManager>();
+        mMessagesSwitch = messagesSwitch;
     }
     
 
@@ -68,6 +71,7 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
 
         System.out.println("S: Done.");
         serverSocket = null;
+
     }
 
     /**
@@ -137,14 +141,14 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
     	DnnMessage message = new DnnHelloMessage(connectedUser.getUsername(), "");
     	
         messageListener.messageReceived(message);
-        
+        //for debug - TODO remove:
         System.out.println("user: " + connectedUser.getUsername() + " is connected. user Id: " + connectedUser.getUserID());
-
+        mMessagesSwitch.getClientManager().addMessageToClient(connectedUser.getUsername(), message);
     }
 
     @Override
     public void userDisconnected(UserManager userManager) {
-
+    	
         // remove the user from the list of connected users
         connectedUsers.remove(userManager);
 
@@ -152,10 +156,11 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
 
     @Override
     public void messageReceived(User fromUser, User toUser) {
-
+    	mMessagesSwitch.getClientManager().addMessageToClient(fromUser.getUsername(),fromUser.getMessage());
+    	System.out.println("user: " + fromUser.getMessage().getContent());
 //        messageListener.messageReceived("User " + fromUser.getUsername() + " says: " + fromUser.getMessage() + " to user: " + (toUser == null ? "ALL" : toUser.getUsername()));
         // send the message to the other clients
-        sendMessage(fromUser);
+    	
 
     }
 

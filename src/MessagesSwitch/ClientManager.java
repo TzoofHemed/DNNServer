@@ -15,7 +15,7 @@ public class ClientManager {
 	
 	public void addClient(String ClientName, DnnMessage message){
 		try{
-			this.clientList.put(ClientName,new Client(ClientName, message));
+			this.clientList.put(ClientName,new Client(ClientName, message, new InputHandler()));
 		}catch (Exception e) {
 			System.out.println("ClientManager: " + e.getMessage());
             e.printStackTrace();
@@ -35,7 +35,7 @@ public class ClientManager {
         }
 	}
 	
-	public DnnMessage getClientLastMessage(String ClientName){
+	public DnnMessage getClientLastInputMessage(String ClientName){
 		try{
 			if(!this.clientList.containsKey(ClientName)){
 				return null;
@@ -46,6 +46,13 @@ public class ClientManager {
             e.printStackTrace();
             throw e;
         }		
+	}
+	
+	public void addMessageToClient(String clientName, DnnMessage message){
+		if(!this.clientList.containsKey(clientName)){
+			addClient(clientName, message);
+		}
+		this.clientList.get(clientName).addInputMessage(message);
 	}
 
 }

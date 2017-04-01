@@ -10,14 +10,20 @@ public class Client {
     private int ClientID;
     private List<DnnMessage> clientInputMessages;
     private List<DnnMessage> clientOutputMessages;
+    private InputHandler mInputHandler;
     
-    public Client(String Clientname, DnnMessage message) {
+    public Client(String Clientname, DnnMessage message, InputHandler inputHandler) {
         this.Clientname = Clientname;
         this.clientInputMessages.add(message);
+        mInputHandler = inputHandler;
     }
 
     public Client() {
 
+    }
+    
+    public InputHandler getInputHandler(){
+    	return mInputHandler;
     }
 
     public int getClientID() {
@@ -55,5 +61,14 @@ public class Client {
 	
 	public DnnMessage getLastInputMessage(){
 		return this.clientInputMessages.get(this.clientInputMessages.size()-1);
+	}
+	public DnnMessage getLastOutputMessage(){
+		return this.clientOutputMessages.get(this.getClientOutputMessages().size()-1);
+	}
+	public void addInputMessage(DnnMessage message){
+		this.clientInputMessages.add(message);
+	}
+	public void addOutputMessage(DnnMessage message){
+		this.clientOutputMessages.add(message);
 	}
 }

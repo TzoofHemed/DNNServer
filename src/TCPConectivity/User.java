@@ -1,5 +1,7 @@
 package TCPConectivity;
 
+import dnn.message.DnnMessage;
+
 /**
  * Encapsulates a user entity, having its port and username
  * <p/>
@@ -7,11 +9,11 @@ package TCPConectivity;
 public class User {
 
     private String username;
-    private String message;
+    private DnnMessage message;
     private User userToSendMessage;
     private int userID;
 
-    public User(String username, String message) {
+    public User(String username, DnnMessage message) {
         this.username = username;
         this.message = message;
     }
@@ -36,11 +38,11 @@ public class User {
         this.username = username;
     }
 
-    public String getMessage() {
+    public DnnMessage getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(DnnMessage message) {
         this.message = message;
     }
 

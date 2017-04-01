@@ -18,5 +18,7 @@ public class DnnHelloMessage extends DnnMessage{
 
 		return mMessageContent;
 	}
+	
+
 
 }

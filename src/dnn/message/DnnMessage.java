@@ -21,7 +21,7 @@ public abstract class DnnMessage implements Serializable {
 	//@returns the content of the message
 	public abstract Object getContent();
 	
-	public void setSenderName(String senderName){
-		mSenderName = senderName;
+	public String getSenderName(){
+		return mSenderName;
 	}
 }

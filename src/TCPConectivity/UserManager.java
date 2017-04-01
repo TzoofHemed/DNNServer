@@ -7,8 +7,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import MessagesSwitch.InputHandler;
 import dnn.message.DnnMessage;
+
 
 /**
  * Manages a single user(client) read/write operations
@@ -24,15 +24,14 @@ public class UserManager extends Thread {
     // flag used to stop the read operation
     private boolean running;
     // used to notify certain user actions like receiving a message or disconnect
-//    private UserManagerDelegate managerDelegate;
     
-    private InputHandler inputHandler;
+    private UserManagerDelegate managerDelegate;
 
-    public UserManager(Socket socket, UserManagerDelegate managerDelegate) {
+    public UserManager(Socket socket, UserManagerDelegate managerDelegate ) {
         this.user = new User();
         this.socket = socket;
-//        this.managerDelegate = managerDelegate;
         running = true;
+        this.managerDelegate =  managerDelegate;
       
     }
 
@@ -69,8 +68,13 @@ public class UserManager extends Thread {
 	                if(!(messageObject instanceof DnnMessage)){
 	                	throw new Exception("Wrong message type received from client");
 	                }
+                    if (messageObject != null && managerDelegate != null) {
+                        user.setMessage((DnnMessage)messageObject);
+                        // notify message received action
+                        managerDelegate.messageReceived(user, null);
+                    }
 	                
-	                inputHandler.newMessageInput(socket.getInetAddress().getHostName(),(DnnMessage)messageObject);
+//	                mInputHandler.newMessageInput(socket.getInetAddress().getHostName(),(DnnMessage)messageObject);
 	                
             }
 
@@ -191,5 +195,6 @@ public class UserManager extends Thread {
         public void messageReceived(User fromUser, User toUser);
 
     }
+
 
 }
