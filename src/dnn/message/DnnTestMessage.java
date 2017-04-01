@@ -5,10 +5,11 @@ public class DnnTestMessage extends DnnMessage {
 	
 	private String mMessageContent;
 	
-	public DnnTestMessage(String messageContent) {
+	public DnnTestMessage(String senderName, String messageContent) {
 
 		mMessageType = MessageType.TEST;
 		mMessageContent = messageContent;
+		mSenderName = senderName;
 	}
 	
 	@Override

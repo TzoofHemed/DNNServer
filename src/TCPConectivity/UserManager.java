@@ -24,14 +24,14 @@ public class UserManager extends Thread {
     // flag used to stop the read operation
     private boolean running;
     // used to notify certain user actions like receiving a message or disconnect
-    private UserManagerDelegate managerDelegate;
+//    private UserManagerDelegate managerDelegate;
     
     private InputHandler inputHandler;
 
     public UserManager(Socket socket, UserManagerDelegate managerDelegate) {
         this.user = new User();
         this.socket = socket;
-        this.managerDelegate = managerDelegate;
+//        this.managerDelegate = managerDelegate;
         running = true;
       
     }
@@ -70,26 +70,8 @@ public class UserManager extends Thread {
 	                	throw new Exception("Wrong message type received from client");
 	                }
 	                
-	                inputHandler.newMessageInput((DnnMessage)messageObject);
+	                inputHandler.newMessageInput(socket.getInetAddress().getHostName(),(DnnMessage)messageObject);
 	                
-//	                switch(messageType){
-//	                case TEST:
-//	                	String message = (String)((DnnMessage)messageObject).getContent();
-//	                	
-////	                	if (hasCommand(message)) {
-////	                        continue;
-////	                    }
-////	    
-//	                	
-//	                    if (message != null && managerDelegate != null) {
-//	                        user.setMessage(message);
-//	                        // notify message received action
-//	                        managerDelegate.messageReceived(user, null);
-//	                    }
-//	                	break;
-//	    			default:
-//	    				break;
-//	                }
             }
 
             
@@ -121,19 +103,8 @@ public class UserManager extends Thread {
             System.out.println("ServerError: " + e.getMessage());
             e.printStackTrace();
         }
-
     }
         
-        public void handleMessage(){
-        	try{
-
-
-        	} catch (Exception e) {
-        		System.out.println("ServerError: " + e.getMessage());
-        		e.printStackTrace();
-        	}
-        }
-
     /**
      * Close the server
      */

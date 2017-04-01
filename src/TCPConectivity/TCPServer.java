@@ -6,6 +6,12 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
+import dnn.message.DnnHelloMessage;
+import dnn.message.DnnMessage;
+
+
+//import javax.swing.JFrame;
+
 public class TCPServer extends Thread implements UserManager.UserManagerDelegate {
 
     public static final int SERVERPORT = 2828;
@@ -19,11 +25,22 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
     /**
      * Constructor of the class
      *
-     * @param messageListener listens for the messages
+     * @param onMessageReceived listens for the messages
      */
-    public TCPServer(OnMessageReceived messageListener) {
-        this.messageListener = messageListener;
+    public TCPServer(TCPServer.OnMessageReceived onMessageReceived) {
+        this.messageListener = onMessageReceived;
         connectedUsers = new ArrayList<UserManager>();
+    }
+    
+
+    public static void main(String[] args) {
+
+        //opens the window where the messages will be received and sent
+        ServerGUI.MainScreen frame = new ServerGUI.MainScreen();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+
     }
 
 //    public static void main(String[] args) {
@@ -51,9 +68,6 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
 
         System.out.println("S: Done.");
         serverSocket = null;
-
-        //todo close all user connections
-
     }
 
     /**
@@ -61,7 +75,7 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
      *
      * @param user a user object containing the message to be sent and also its username
      */
-    public void sendMessage(User user) {
+    public void sendMessage(User user) {	//TODO implement this message for a real DNN SERVER!
 
         if (connectedUsers != null) {
 
@@ -120,7 +134,11 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
     @Override
     public void userConnected(User connectedUser) {
 
-        messageListener.messageReceived("User " + connectedUser.getUsername() + "is now connected.");
+    	DnnMessage message = new DnnHelloMessage(connectedUser.getUsername(), "");
+    	
+        messageListener.messageReceived(message);
+        
+        System.out.println("user: " + connectedUser.getUsername() + " is connected. user Id: " + connectedUser.getUserID());
 
     }
 
@@ -135,7 +153,7 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
     @Override
     public void messageReceived(User fromUser, User toUser) {
 
-        messageListener.messageReceived("User " + fromUser.getUsername() + " says: " + fromUser.getMessage() + " to user: " + (toUser == null ? "ALL" : toUser.getUsername()));
+//        messageListener.messageReceived("User " + fromUser.getUsername() + " says: " + fromUser.getMessage() + " to user: " + (toUser == null ? "ALL" : toUser.getUsername()));
         // send the message to the other clients
         sendMessage(fromUser);
 
@@ -144,7 +162,7 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
     //Declare the interface. The method messageReceived(String message) will/must be implemented in the ServerBoard
     //class at on startServer button click
     public interface OnMessageReceived {
-        public void messageReceived(String message);
+        public void messageReceived(DnnMessage message);
     }
 
 }

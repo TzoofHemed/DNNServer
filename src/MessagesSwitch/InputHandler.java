@@ -20,7 +20,7 @@ public class InputHandler {
 		this.mClientName = mClientName;
 	}
 	
-	public void newMessageInput(DnnMessage newMessage){
+	public void newMessageInput(String clientName, DnnMessage newMessage){
         switch(newMessage.getMessageType()){
         case TEST:
 //            if (message != null && managerDelegate != null) {

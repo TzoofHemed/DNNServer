@@ -6,8 +6,10 @@ public abstract class DnnMessage implements Serializable {
 	static final long serialVersionUID = 1L;
 	// defines the message type
 	public static enum MessageType{
-		MODEL, DELTA, TEST, STRING, STATISTICS
+		MODEL, DELTA, TEST, STRING, STATISTICS, HELLO
 	}
+	
+	protected String mSenderName;
 	
 	protected MessageType mMessageType;
 	
@@ -18,4 +20,8 @@ public abstract class DnnMessage implements Serializable {
 	
 	//@returns the content of the message
 	public abstract Object getContent();
+	
+	public void setSenderName(String senderName){
+		mSenderName = senderName;
+	}
 }
