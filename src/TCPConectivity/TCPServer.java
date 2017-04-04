@@ -46,6 +46,9 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
 
     }
 
+    public ArrayList<UserManager>getConnectedUserManagers(){
+    	return this.connectedUsers;
+    }
 //    public static void main(String[] args) {
 //
 //        //opens the window where the messages will be received and sent
@@ -75,22 +78,19 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
     }
 
     /**
-     * Method to send the messages from server to all clients
-     *
+     * 
      * @param user a user object containing the message to be sent and also its username
      */
-    public void sendMessage(User user) {	//TODO implement this message for a real DNN SERVER!
+    public void sendMessage() {
 
         if (connectedUsers != null) {
-
-            for (UserManager userManager : connectedUsers) {
-                if (userManager.getUser().getUserID() != user.getUserID()) {
-                    userManager.sendMessage(user.getUsername() + " says: " + user.getMessage());
-                }
-            }
-
+        	for(UserManager userManager : connectedUsers ){
+        		DnnMessage message = userManager.getUserOutputMessage();
+        		if(message != null){
+        			userManager.sendMessage(message);
+        		}
+        	}
         }
-
     }
 
     /**
@@ -119,6 +119,8 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
                 userManager.start();
 
                 System.out.println("S: New client connected ...");
+                
+                sendMessage();
             }
 
         } catch (Exception e) {
@@ -156,6 +158,7 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
 
     @Override
     public void messageReceived(User fromUser, User toUser) {
+    	messageListener.messageReceived(fromUser.getMessage());
     	mMessagesSwitch.getClientManager().addMessageToClient(fromUser.getUsername(),fromUser.getMessage());
     	System.out.println(fromUser.getUsername()+ ":  " + fromUser.getMessage().getContent());
 //        messageListener.messageReceived("User " + fromUser.getUsername() + " says: " + fromUser.getMessage() + " to user: " + (toUser == null ? "ALL" : toUser.getUsername()));

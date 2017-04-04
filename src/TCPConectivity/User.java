@@ -10,7 +10,7 @@ public class User {
 
     private String username;
     private DnnMessage message;
-    private User userToSendMessage;
+    private DnnMessage userToSendMessage;
     private int userID;
 
     public User(String username, DnnMessage message) {
@@ -46,11 +46,11 @@ public class User {
         this.message = message;
     }
 
-    public User getUserToSendMessage() {
+    public DnnMessage getUserToSendMessage() {
         return userToSendMessage;
     }
 
-    public void setUserToSendMessage(User userToSendMessage) {
+    public void setUserToSendMessage(DnnMessage userToSendMessage) {
         this.userToSendMessage = userToSendMessage;
     }
 }

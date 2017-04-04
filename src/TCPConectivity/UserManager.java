@@ -1,10 +1,8 @@
 package TCPConectivity;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import dnn.message.DnnMessage;
@@ -20,7 +18,7 @@ public class UserManager extends Thread {
     private User user;
     // the socket that links the user(client) to this server
     private Socket socket;
-    private PrintWriter bufferSender;
+    private ObjectOutputStream bufferSender;
     // flag used to stop the read operation
     private boolean running;
     // used to notify certain user actions like receiving a message or disconnect
@@ -52,7 +50,7 @@ public class UserManager extends Thread {
         try {
 
             //sends the message to the client
-            bufferSender = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
+            bufferSender = new ObjectOutputStream(socket.getOutputStream());
 
             //read the message received from client
             ObjectInputStream oInputStream = new ObjectInputStream(socket.getInputStream());
@@ -80,29 +78,7 @@ public class UserManager extends Thread {
             }
 
             
-//            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            //in this while we wait to receive messages from client (it's an infinite loop)
-            //this while it's like a listener for messages
-//            while (running) {
-//
-//                String message = null;
-//                try {
-//                    message = in.readLine();
-//                } catch (IOException e) {
-//                    System.out.println("Error reading message: " + e.getMessage());
-//                }
-//
-//                if (hasCommand(message)) {
-//                    continue;
-//                }
-//
-//                if (message != null && managerDelegate != null) {
-//                    user.setMessage(message);
-//                    // notify message received action
-//                    managerDelegate.messageReceived(user, null);
-//                }
-//            }
 
         } catch (Exception e) {
             System.out.println("ServerError: " + e.getMessage());
@@ -118,8 +94,6 @@ public class UserManager extends Thread {
         running = false;
 
         if (bufferSender != null) {
-            bufferSender.flush();
-            bufferSender.close();
             bufferSender = null;
         }
 
@@ -141,32 +115,25 @@ public class UserManager extends Thread {
      *
      * @param message the message sent by the server
      */
-    public void sendMessage(String message) {
-        if (bufferSender != null && !bufferSender.checkError()) {
-            bufferSender.println(message);
-            bufferSender.flush();
+    public void sendMessage(DnnMessage message) {
+        if (bufferSender != null ) {
+        	try {
+				bufferSender.writeObject(message);
+			} catch (IOException e) {
+				System.out.println(e.toString());
+				e.printStackTrace();
+			}
+            
         }
     }
+    
+    public DnnMessage getUserOutputMessage(){
+    	return this.getUser().getUserToSendMessage();
+    }
 
-//    public boolean hasCommand(String message) {
-//        if (message != null) {
-//            if (message.contains(Constants.CLOSED_CONNECTION)) {
-//                close();
-//                // let the server know that this user was disconnected
-//                managerDelegate.userDisconnected(this);
-//                return true;
-//            } else if (message.contains(Constants.LOGIN_NAME)) {
-//                // parse the username
-//                user.setUsername(message.replaceAll(Constants.LOGIN_NAME, ""));
-//                user.setUserID(socket.getPort());
-//                // send a user connected message
-//                managerDelegate.userConnected(user);
-//                return true;
-//            }
-//        }
-//
-//        return false;
-//    }
+    public void setUserOutputMessage(DnnMessage message){
+    	this.getUser().setUserToSendMessage(message);
+    }
 
     /**
      * Used to talk with the TcpServer class or whoever wants to receive notifications from this manager

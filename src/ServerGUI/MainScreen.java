@@ -40,7 +40,7 @@ public class MainScreen extends JFrame{
         mainLog.setRows(10);
         mainLog.setEditable(false);
         
-        mMessagesSwitch = new MessagesSwitch();
+        mMessagesSwitch = new MessagesSwitch(mServer);
         
         
         
@@ -56,7 +56,7 @@ public class MainScreen extends JFrame{
                     //this method is actually a callback method, because it will run every time when it will be called from
                     //TCPServer class (at while)
                     public void messageReceived(DnnMessage message) { //TODO this is temporary print to mainLog
-                        mainLog.append("\n " + message.getMessageType() + "receidved from: "); //TODO add implementation for log handling
+                        mainLog.append("\nmessage type: " + message.getMessageType() + " receidved from: "+message.getSenderName() + " message Content: " + message.getContent().toString()); //TODO add implementation for log handling
                     }
                 },mMessagesSwitch);
                 mServer.start();
@@ -117,9 +117,9 @@ public class MainScreen extends JFrame{
 				        {
 				            InetAddress addr = a.nextElement();
 				            String IpAddress = addr.getHostAddress();
-//				            addr.
 				            if(IpAddress.contains("192.168.")){
-				            	System.out.println("  " + IpAddress);	
+				            	System.out.println("  " + IpAddress);
+				            	mainLog.append("\nServer Ip: "+IpAddress+ "\n");
 				            }
 				            
 				        }
