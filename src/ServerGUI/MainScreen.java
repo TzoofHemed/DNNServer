@@ -2,6 +2,7 @@ package ServerGUI;
 
 import javax.swing.*;
 
+import DNNProcessingUint.DNNController;
 import MessagesSwitch.MessagesSwitch;
 import TCPConectivity.TCPServer;
 import dnn.message.DnnMessage;
@@ -20,6 +21,7 @@ public class MainScreen extends JFrame{
 	private JTextField serverCmd;
 	private TCPServer mServer;
 	private JButton sendCmd;
+	private DNNController mDnnController;
 	
 	private MessagesSwitch mMessagesSwitch;
 	
@@ -63,6 +65,8 @@ public class MainScreen extends JFrame{
                 startRxButton.setEnabled(false);
                 stopRxButton.setEnabled(true);
 
+                mDnnController = new DNNController();
+                mDnnController.start();
             }
         });
         
