@@ -70,6 +70,7 @@ public class UserManager extends Thread {
 	                }
                     if (messageObject != null && managerDelegate != null) {
                         user.setMessage((DnnMessage)messageObject);
+                        user.setUsername(((DnnMessage)messageObject).getSenderName());
                         // notify message received action
                         managerDelegate.messageReceived(user, null);
                     }

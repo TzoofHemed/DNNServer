@@ -5,15 +5,19 @@ import DNNModel.DnnModel;
 
 public class DNNController extends Thread{
 
+	private boolean mRunning;
 	private DnnModel mModel;
 	private DNNModelConstants mModelConstatns;
 	
 	public DNNController(){
 		setmModel(new DnnModel(mModelConstatns));
+		
 	}
 	
 	public void runDnnController(){
-		
+		while(mRunning){
+			
+		}
 	}
 	
 	
@@ -21,8 +25,13 @@ public class DNNController extends Thread{
     public void run() {
         super.run();
 
+        mRunning = true;
         runDnnController();
 
+    }
+    
+    public void stopController(){
+    	mRunning =false;
     }
 	
 	

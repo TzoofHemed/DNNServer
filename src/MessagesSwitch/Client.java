@@ -1,5 +1,6 @@
 package MessagesSwitch;
 
+import java.util.ArrayList;
 import java.util.List;
 import dnn.message.*;
 
@@ -13,7 +14,9 @@ public class Client {
     private InputHandler mInputHandler;
     
     public Client(String Clientname, DnnMessage message, InputHandler inputHandler) {
-        this.Clientname = Clientname;
+        this.clientInputMessages = new ArrayList<>();
+        this.clientOutputMessages = new ArrayList<>();
+    	this.Clientname = Clientname;
         this.clientInputMessages.add(message);
         mInputHandler = inputHandler;
     }

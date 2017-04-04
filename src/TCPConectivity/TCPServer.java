@@ -157,7 +157,7 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
     @Override
     public void messageReceived(User fromUser, User toUser) {
     	mMessagesSwitch.getClientManager().addMessageToClient(fromUser.getUsername(),fromUser.getMessage());
-    	System.out.println("user: " + fromUser.getMessage().getContent());
+    	System.out.println(fromUser.getUsername()+ ":  " + fromUser.getMessage().getContent());
 //        messageListener.messageReceived("User " + fromUser.getUsername() + " says: " + fromUser.getMessage() + " to user: " + (toUser == null ? "ALL" : toUser.getUsername()));
         // send the message to the other clients
     	
