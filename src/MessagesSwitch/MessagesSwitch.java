@@ -4,6 +4,8 @@ import TCPConectivity.TCPServer;
 import TCPConectivity.UserManager;
 import dnn.message.DnnMessage;
 
+//TODO add mutex for connected userManger array
+
 public class MessagesSwitch {
 	
 	private ClientManager mClientManager;
