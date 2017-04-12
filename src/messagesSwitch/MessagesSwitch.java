@@ -12,8 +12,8 @@ public class MessagesSwitch {
 	private TCPServer mServer;
 	
 	public MessagesSwitch(TCPServer server){
-		mClientManager = new ClientManager();
 		setmServer(server);
+		mClientManager = new ClientManager();
 
 	}
 	
@@ -36,5 +36,7 @@ public class MessagesSwitch {
 	public void setmServer(TCPServer mServer) {
 		this.mServer = mServer;
 	}
+	
+
 	
 }

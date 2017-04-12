@@ -73,7 +73,7 @@ public class UserManager extends Thread {
                         user.setMessage((DnnMessage)messageObject);
                         user.setUsername(((DnnMessage)messageObject).getSenderName());
                         // notify message received action
-                        managerDelegate.messageReceived(user, null);
+                        managerDelegate.messageReceived(user);
                     }
                     DnnMessage fromServer = getUserOutputMessage();
                     if(fromServer != null){
@@ -164,7 +164,7 @@ public class UserManager extends Thread {
          * @param fromUser the user that sent the message
          * @param toUser   the user that should receive the message
          */
-        public void messageReceived(User fromUser, User toUser);
+        public void messageReceived(User fromUser);
 
     }
 

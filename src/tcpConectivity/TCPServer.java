@@ -35,7 +35,11 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
         mMessagesSwitch = new MessagesSwitch(this);
     }
     
-
+    public MessagesSwitch getMessageSwitch(){
+    	return mMessagesSwitch;
+    }
+    
+    
     public static void main(String[] args) {
 
         //opens the window where the messages will be received and sent
@@ -157,7 +161,7 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
     }
 
     @Override
-    public void messageReceived(User fromUser, User toUser) {
+    public void messageReceived(User fromUser) {
     	messageListener.messageReceived(fromUser.peekMessage());
     	mMessagesSwitch.getClientManager().addMessageToClient(fromUser.getUsername(),fromUser.getMessage());
 //    	System.out.println(fromUser.getUsername()+ ":  " + fromUser.getMessage().getContent());

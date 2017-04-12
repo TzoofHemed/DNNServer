@@ -62,7 +62,7 @@ public class MainScreen extends JFrame{
                 startRxButton.setEnabled(false);
                 stopRxButton.setEnabled(true);
 
-                mDnnController = new DNNController();
+                mDnnController = new DNNController(mServer.getMessageSwitch());
                 mDnnController.start();
             }
         });
