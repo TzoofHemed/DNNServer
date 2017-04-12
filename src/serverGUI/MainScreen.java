@@ -4,7 +4,6 @@ import javax.swing.*;
 
 import dnnUtil.dnnMessage.DnnMessage;
 import dnnProcessingUint.DNNController;
-import messagesSwitch.MessagesSwitch;
 import tcpConectivity.TCPServer;
 
 import java.awt.event.ActionEvent;
@@ -23,7 +22,6 @@ public class MainScreen extends JFrame{
 	private JButton sendCmd;
 	private DNNController mDnnController;
 	
-	private MessagesSwitch mMessagesSwitch;
 	
 	public MainScreen(){
 		JPanel panelFields = new JPanel();
@@ -40,8 +38,7 @@ public class MainScreen extends JFrame{
         mainLog.setRows(10);
         mainLog.setEditable(false);
         
-        mMessagesSwitch = new MessagesSwitch(mServer);
-        
+      
         
         
         startRxButton = new JButton("Start DNN Server");
@@ -58,7 +55,7 @@ public class MainScreen extends JFrame{
                     public void messageReceived(DnnMessage message) { //TODO this is temporary print to mainLog
                         mainLog.append("\nmessage type: " + message.getMessageType() + " receidved from: "+message.getSenderName() + " message Content: " + message.getContent().toString()); //TODO add implementation for log handling
                     }
-                },mMessagesSwitch);
+                });
                 mServer.start();
 
                 // disable the start button and enable the stop one

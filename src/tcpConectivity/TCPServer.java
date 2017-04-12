@@ -29,10 +29,10 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
      *
      * @param onMessageReceived listens for the messages
      */
-    public TCPServer(TCPServer.OnMessageReceived onMessageReceived, MessagesSwitch messagesSwitch) {
+    public TCPServer(TCPServer.OnMessageReceived onMessageReceived) {
         this.messageListener = onMessageReceived;
         connectedUsers = new ArrayList<UserManager>();
-        mMessagesSwitch = messagesSwitch;
+        mMessagesSwitch = new MessagesSwitch(this);
     }
     
 
@@ -158,9 +158,9 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
 
     @Override
     public void messageReceived(User fromUser, User toUser) {
-    	messageListener.messageReceived(fromUser.getMessage());
+    	messageListener.messageReceived(fromUser.peekMessage());
     	mMessagesSwitch.getClientManager().addMessageToClient(fromUser.getUsername(),fromUser.getMessage());
-    	System.out.println(fromUser.getUsername()+ ":  " + fromUser.getMessage().getContent());
+//    	System.out.println(fromUser.getUsername()+ ":  " + fromUser.getMessage().getContent());
 //        messageListener.messageReceived("User " + fromUser.getUsername() + " says: " + fromUser.getMessage() + " to user: " + (toUser == null ? "ALL" : toUser.getUsername()));
         // send the message to the other clients
     	

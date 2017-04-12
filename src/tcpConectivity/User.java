@@ -1,5 +1,7 @@
 package tcpConectivity;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import dnnUtil.dnnMessage.DnnMessage;
 
 /**
@@ -9,17 +11,21 @@ import dnnUtil.dnnMessage.DnnMessage;
 public class User {
 
     private String username;
-    private DnnMessage message;
-    private DnnMessage userToSendMessage;
+    private final BlockingQueue<DnnMessage> userInputMessages;
+    private final BlockingQueue<DnnMessage> userOutputMessages;
+
     private int userID;
 
     public User(String username, DnnMessage message) {
         this.username = username;
-        this.message = message;
+        userInputMessages = new LinkedBlockingQueue<>();
+        userOutputMessages = new LinkedBlockingQueue<>();
+        userInputMessages.add(message);
     }
 
     public User() {
-
+        userInputMessages = new LinkedBlockingQueue<>();
+        userOutputMessages = new LinkedBlockingQueue<>();
     }
 
     public int getUserID() {
@@ -39,18 +45,22 @@ public class User {
     }
 
     public DnnMessage getMessage() {
-        return message;
+    		return userInputMessages.poll();
     }
 
     public void setMessage(DnnMessage message) {
-        this.message = message;
+    	userInputMessages.add(message);
     }
 
     public DnnMessage getUserToSendMessage() {
-        return userToSendMessage;
+    		return userOutputMessages.poll();
     }
 
     public void setUserToSendMessage(DnnMessage userToSendMessage) {
-        this.userToSendMessage = userToSendMessage;
+   		userOutputMessages.add(userToSendMessage);
+    }
+    
+    public DnnMessage peekMessage(){
+    	return userInputMessages.peek();
     }
 }

@@ -1,8 +1,7 @@
 package messagesSwitch;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import dnnUtil.dnnMessage.*;
 
 
@@ -10,22 +9,18 @@ public class Client {
 
     private String Clientname;
     private int ClientID;
-    private List<DnnMessage> clientInputMessages;
-    private List<DnnMessage> clientOutputMessages;
+    private final BlockingQueue<DnnMessage> clientInputMessages;
+    private final BlockingQueue<DnnMessage> clientOutputMessages;
     private InputHandler mInputHandler;
     
     public Client(String Clientname, DnnMessage message, InputHandler inputHandler) {
-        this.clientInputMessages = new ArrayList<>();
-        this.clientOutputMessages = new ArrayList<>();
+        this.clientInputMessages = new LinkedBlockingQueue<>();
+        this.clientOutputMessages = new LinkedBlockingQueue<>();
     	this.Clientname = Clientname;
         this.clientInputMessages.add(message);
         mInputHandler = inputHandler;
     }
 
-    public Client() {
-
-    }
-    
     public InputHandler getInputHandler(){
     	return mInputHandler;
     }
@@ -45,34 +40,22 @@ public class Client {
     public void setClientname(String Clientname) {
         this.Clientname = Clientname;
     }
-
-
-	public List<DnnMessage> getClientOutputMessages() {
-		return clientOutputMessages;
-	}
-
-	public void setClientOutputMessages(List<DnnMessage> clientOutputMessages) {
-		this.clientOutputMessages = clientOutputMessages;
-	}
-	
-	public List<DnnMessage> getClientInputMessages() {
-		return this.clientOutputMessages;
-	}
-
-	public void setClientInputMessages(List<DnnMessage> clientInputMessages) {
-		this.clientInputMessages = clientInputMessages;
-	}
 	
 	public DnnMessage getLastInputMessage(){
-		return this.clientInputMessages.get(this.clientInputMessages.size()-1);
+		return this.clientInputMessages.remove();
 	}
+	
 	public DnnMessage getLastOutputMessage(){
-		return this.clientOutputMessages.get(this.getClientOutputMessages().size()-1);
+		return this.clientOutputMessages.remove();
 	}
+	
 	public void addInputMessage(DnnMessage message){
-		this.clientInputMessages.add(message);
+			this.clientInputMessages.add(message);
 	}
+	
 	public void addOutputMessage(DnnMessage message){
 		this.clientOutputMessages.add(message);
+
 	}
+	
 }

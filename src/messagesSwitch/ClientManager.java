@@ -48,6 +48,19 @@ public class ClientManager {
         }		
 	}
 	
+	public DnnMessage getClientLastOutputMessage(String ClientName){
+		try{
+			if(!this.clientList.containsKey(ClientName)){
+				return null;
+			}
+			return this.clientList.get(ClientName).getLastOutputMessage();
+		}catch (Exception e) {
+            System.out.println("ClientManager: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }		
+	}
+	
 	public void addMessageToClient(String clientName, DnnMessage message){
 		if(!this.clientList.containsKey(clientName)){
 			addClient(clientName, message);

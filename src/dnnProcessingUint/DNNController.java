@@ -2,12 +2,14 @@ package dnnProcessingUint;
 
 import dnnUtil.dnnModel.DNNModelConstants;
 import dnnUtil.dnnModel.DnnModel;
+import messagesSwitch.ClientManager;
 
 public class DNNController extends Thread{
 
 	private boolean mRunning;
 	private DnnModel mModel;
 	private DNNModelConstants mModelConstatns;
+//	private ClientManager mClientManager;
 	
 	public DNNController(){
 		setmModel(new DnnModel(mModelConstatns));

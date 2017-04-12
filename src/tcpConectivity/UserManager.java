@@ -60,11 +60,14 @@ public class UserManager extends Thread {
 	                try {
 	                	messageObject = oInputStream.readObject();
 	                } catch (IOException e) {
-	                    System.out.println("Error reading message: " + e.getMessage());
+	                	if(e.getMessage() != null){
+	                		System.out.println("Error reading message: " + e.getMessage());
+	                	}
 	                }
 	
 	                if(!(messageObject instanceof DnnMessage)){
-	                	throw new Exception("Wrong message type received from client");
+	                	continue;
+//	                	throw new Exception("Wrong message type received from client");
 	                }
                     if (messageObject != null && managerDelegate != null) {
                         user.setMessage((DnnMessage)messageObject);
@@ -72,13 +75,14 @@ public class UserManager extends Thread {
                         // notify message received action
                         managerDelegate.messageReceived(user, null);
                     }
+                    DnnMessage fromServer = getUserOutputMessage();
+                    if(fromServer != null){
+                    	sendMessage(fromServer);
+                    }
 	                
 //	                mInputHandler.newMessageInput(socket.getInetAddress().getHostName(),(DnnMessage)messageObject);
 	                
             }
-
-            
-
 
         } catch (Exception e) {
             System.out.println("ServerError: " + e.getMessage());
