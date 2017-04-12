@@ -1,0 +1,3 @@
+[submodule "src/dnnUtil"]
+	path = src/dnnUtil
+	url = https://github.com/NitaiLavie/dnnUtil
