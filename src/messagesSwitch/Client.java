@@ -3,7 +3,7 @@ package messagesSwitch;
 import java.util.ArrayList;
 import java.util.List;
 
-import dnnMessage.*;
+import dnnUtil.dnnMessage.*;
 
 
 public class Client {

@@ -3,7 +3,7 @@ package messagesSwitch;
 import java.util.HashMap;
 import java.util.Map;
 
-import dnnMessage.*;
+import dnnUtil.dnnMessage.*;
 
 
 public class ClientManager {

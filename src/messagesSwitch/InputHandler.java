@@ -1,6 +1,6 @@
 package messagesSwitch;
 
-import dnnMessage.*;
+import dnnUtil.dnnMessage.*;
 import tcpConectivity.User;
 
 public class InputHandler {

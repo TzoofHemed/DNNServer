@@ -1,6 +1,6 @@
 package messagesSwitch;
 
-import dnnMessage.DnnMessage;
+import dnnUtil.dnnMessage.DnnMessage;
 import tcpConectivity.TCPServer;
 import tcpConectivity.UserManager;
 

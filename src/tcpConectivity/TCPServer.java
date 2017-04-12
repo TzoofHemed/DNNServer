@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
-import dnnMessage.DnnHelloMessage;
-import dnnMessage.DnnMessage;
+import dnnUtil.dnnMessage.DnnHelloMessage;
+import dnnUtil.dnnMessage.DnnMessage;
 import messagesSwitch.MessagesSwitch;
 
 

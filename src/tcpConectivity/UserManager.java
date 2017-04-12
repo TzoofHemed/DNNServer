@@ -5,7 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-import dnnMessage.DnnMessage;
+import dnnUtil.dnnMessage.DnnMessage;
 
 
 /**

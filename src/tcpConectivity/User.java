@@ -1,6 +1,6 @@
 package tcpConectivity;
 
-import dnnMessage.DnnMessage;
+import dnnUtil.dnnMessage.DnnMessage;
 
 /**
  * Encapsulates a user entity, having its port and username

@@ -1,7 +1,7 @@
 package dnnProcessingUint;
 
-import dnnModel.DNNModelConstants;
-import dnnModel.DnnModel;
+import dnnUtil.dnnModel.DNNModelConstants;
+import dnnUtil.dnnModel.DnnModel;
 
 public class DNNController extends Thread{
 

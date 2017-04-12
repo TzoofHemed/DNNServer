@@ -1,7 +1,6 @@
 package dnnProcessingUint;
 
-import dnnModel.DnnModel;
-import dnnModel.DnnModelDelta;
+import dnnUtil.dnnModel.*;
 
 public class ModelUpdater {
 

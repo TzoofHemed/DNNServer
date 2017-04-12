@@ -2,7 +2,7 @@ package serverGUI;
 
 import javax.swing.*;
 
-import dnnMessage.DnnMessage;
+import dnnUtil.dnnMessage.DnnMessage;
 import dnnProcessingUint.DNNController;
 import messagesSwitch.MessagesSwitch;
 import tcpConectivity.TCPServer;
