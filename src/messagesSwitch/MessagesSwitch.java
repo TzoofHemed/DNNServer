@@ -1,5 +1,7 @@
 package messagesSwitch;
 
+import java.util.ArrayList;
+
 import dnnUtil.dnnMessage.DnnMessage;
 import tcpConectivity.TCPServer;
 import tcpConectivity.UserManager;
@@ -14,7 +16,6 @@ public class MessagesSwitch {
 	public MessagesSwitch(TCPServer server){
 		setmServer(server);
 		mClientManager = new ClientManager();
-
 	}
 	
 	public ClientManager getClientManager(){
@@ -35,6 +36,17 @@ public class MessagesSwitch {
 
 	public void setmServer(TCPServer mServer) {
 		this.mServer = mServer;
+	}
+
+	public void updateOutputMessages(){
+		ArrayList<String> clientNames = getClientManager().getClientNames();
+		DnnMessage outputMessage;
+		for(String clientName : clientNames){
+			outputMessage = getClientManager().getClientLastOutputMessage(clientName);
+			if(outputMessage != null){
+				setUserOutputMessage(clientName,outputMessage);
+			}
+		}
 	}
 	
 

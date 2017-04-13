@@ -46,7 +46,7 @@ public class Client {
 	}
 	
 	public DnnMessage getLastOutputMessage(){
-		return this.clientOutputMessages.remove();
+		return this.clientOutputMessages.poll();
 	}
 	
 	public void addInputMessage(DnnMessage message){

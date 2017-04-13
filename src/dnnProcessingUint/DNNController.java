@@ -20,8 +20,15 @@ public class DNNController extends Thread{
 	public void runDnnController(){
 		while(mRunning){
 			//TODO implement DNN controller loop
+			forwardOutputMessages();
+			
+			
 		}
 	}
+	
+	 private void forwardOutputMessages(){
+		 mMessageSwitch.updateOutputMessages();
+	 }
 	
 	
     @Override
