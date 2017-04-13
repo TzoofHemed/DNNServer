@@ -4,6 +4,9 @@ import dnnUtil.dnnModel.*;
 
 public class ModelUpdater {
 
+	static {
+		System.loadLibrary("");  		//TODO add library name!
+	}
 	public ModelUpdater(){
 		
 	}
@@ -14,7 +17,10 @@ public class ModelUpdater {
 	
 	public DnnModel rewriteModel(DnnModel oldModel){
 		DnnModel newModel = oldModel;
+		
 		//TODO implement
 		return newModel;
 	}
+	
+	private native void updateModel();
 }
