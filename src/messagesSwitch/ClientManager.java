@@ -1,22 +1,25 @@
 package messagesSwitch;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import dnnUtil.dnnMessage.*;
 
 
 public class ClientManager {
-	private Map<String,Client> clientList;
-	
-	public ClientManager(){
-		clientList = new LinkedHashMap<>();
+	private ConcurrentMap<String,Client> clientList;
+	private MessagesSwitch mMessagesSwitch;
+	public ClientManager(MessagesSwitch messagesSwitch){
+		clientList = new ConcurrentHashMap<>();
+		mMessagesSwitch = messagesSwitch;
+		
 	}
 	
 	public void addClient(String ClientName, DnnMessage message){
 		try{
-			this.clientList.put(ClientName,new Client(ClientName, message, new InputHandler()));
+			this.clientList.put(ClientName,new Client(ClientName, message, new InputHandler(mMessagesSwitch)));
 		}catch (Exception e) {
 			System.out.println("ClientManager: " + e.getMessage());
             e.printStackTrace();

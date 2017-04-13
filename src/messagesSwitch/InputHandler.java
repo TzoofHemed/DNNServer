@@ -1,13 +1,15 @@
 package messagesSwitch;
 
 import dnnUtil.dnnMessage.*;
+import dnnUtil.dnnModel.DnnModelDelta;
+import dnnUtil.dnnStatistics.DnnStatistics;
 import tcpConectivity.User;
 
 public class InputHandler {
 	
-	
-	public InputHandler(){
-
+	private MessagesSwitch mMessageSwitch;
+	public InputHandler(MessagesSwitch messageSwitch){
+		mMessageSwitch = messageSwitch;
 	}
 
 	
@@ -22,10 +24,16 @@ public class InputHandler {
         case MODEL:
         	break;
         case DELTA:
+        	if(newMessage.getContent() instanceof DnnModelDelta){
+        		mMessageSwitch.getController().getModelUpdater().deltaChecker((DnnModelDelta)newMessage.getContent());
+        	}
         	break;
         case STRING:
         	break;
         case STATISTICS:
+        	if(newMessage.getContent() instanceof DnnStatistics){
+        		mMessageSwitch.getController().addStatistics((DnnStatistics)newMessage.getContent());
+        	}
         	break;
         case HELLO:
 

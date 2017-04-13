@@ -1,26 +1,31 @@
 package dnnProcessingUnit;
 
+import java.util.ArrayList;
+
 import dnnUtil.dnnModel.*;
 
 public class ModelUpdater {
 
-	static {
-		System.loadLibrary("");  		//TODO add library name!
-	}
+	private ArrayList<DnnModelDelta> mDeltasToUpdate;
+
 	public ModelUpdater(){
-		
+		mDeltasToUpdate = new ArrayList<>();
 	}
 	
 	public void deltaChecker(DnnModelDelta delta){
 	//TODO implement	
+		if(true){		//add better rule for delta checking
+			mDeltasToUpdate.add(delta);
+		}
 	}
+
 	
 	public DnnModel rewriteModel(DnnModel oldModel){
 		DnnModel newModel = oldModel;
-		
-		//TODO implement
+		for (DnnModelDelta modelDelta : mDeltasToUpdate) {
+			newModel.updateModel(modelDelta);
+		}
 		return newModel;
 	}
-	
-	private native void updateModel();
+
 }

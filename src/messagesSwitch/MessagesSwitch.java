@@ -2,6 +2,7 @@ package messagesSwitch;
 
 import java.util.ArrayList;
 
+import dnnProcessingUnit.DnnController;
 import dnnUtil.dnnMessage.DnnMessage;
 import tcpConectivity.TCPServer;
 import tcpConectivity.UserManager;
@@ -12,10 +13,11 @@ public class MessagesSwitch {
 	
 	private ClientManager mClientManager;
 	private TCPServer mServer;
+	private DnnController mController;
 	
 	public MessagesSwitch(TCPServer server){
-		setmServer(server);
-		mClientManager = new ClientManager();
+		setServer(server);
+		mClientManager = new ClientManager(this);
 	}
 	
 	public ClientManager getClientManager(){
@@ -23,19 +25,23 @@ public class MessagesSwitch {
 	}
 	//TODO add interface from and to TCPServer for getting connected array
 	public void setUserOutputMessage(String userName, DnnMessage message){
-		for(UserManager userManager : getmServer().getConnectedUserManagers()){
+		for(UserManager userManager : getServer().getConnectedUserManagers()){
 			if(userManager.getUser().getUsername() == userName){
 				userManager.setUserOutputMessage(message);
 			}
 		}
 	}
 
-	public TCPServer getmServer() {
+	public TCPServer getServer() {
 		return mServer;
 	}
 
-	public void setmServer(TCPServer mServer) {
+	public void setServer(TCPServer mServer) {
 		this.mServer = mServer;
+	}
+	
+	public void setController(DnnController controller){
+		mController = controller;
 	}
 
 	public void updateOutputMessages(){
@@ -49,6 +55,9 @@ public class MessagesSwitch {
 		}
 	}
 	
+	public DnnController getController(){
+		return mController;
+	}
 
 	
 }
