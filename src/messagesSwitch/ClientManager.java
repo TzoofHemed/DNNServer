@@ -1,6 +1,7 @@
 package messagesSwitch;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import dnnUtil.dnnMessage.*;
@@ -10,7 +11,7 @@ public class ClientManager {
 	private Map<String,Client> clientList;
 	
 	public ClientManager(){
-		clientList = new HashMap<>();
+		clientList = new LinkedHashMap<>();
 	}
 	
 	public void addClient(String ClientName, DnnMessage message){
@@ -68,4 +69,13 @@ public class ClientManager {
 		this.clientList.get(clientName).addInputMessage(message);
 	}
 
+	public ArrayList<String> getClientNames(){
+		String key;
+		ArrayList<String> clientNames = new ArrayList<>();
+		for(Map.Entry<String, Client> entry : clientList.entrySet()){
+			key = entry.getKey();
+			clientNames.add(key);
+		}
+		return clientNames;
+	}
 }
