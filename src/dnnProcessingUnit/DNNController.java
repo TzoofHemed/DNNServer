@@ -1,4 +1,4 @@
-package dnnProcessingUint;
+package dnnProcessingUnit;
 
 import dnnUtil.dnnModel.DNNModelConstants;
 import dnnUtil.dnnModel.DnnModel;
@@ -58,4 +58,7 @@ public class DNNController extends Thread{
 		this.mModel = mModel;
 	}
 
+	public void assignClient(){
+		
+	}
 }

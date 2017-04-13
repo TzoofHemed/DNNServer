@@ -2,8 +2,8 @@ package serverGUI;
 
 import javax.swing.*;
 
+import dnnProcessingUnit.DNNController;
 import dnnUtil.dnnMessage.DnnMessage;
-import dnnProcessingUint.DNNController;
 import tcpConectivity.TCPServer;
 
 import java.awt.event.ActionEvent;

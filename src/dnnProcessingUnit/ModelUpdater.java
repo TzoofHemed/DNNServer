@@ -1,4 +1,4 @@
-package dnnProcessingUint;
+package dnnProcessingUnit;
 
 import dnnUtil.dnnModel.*;
 

@@ -1,4 +1,4 @@
-package dnnProcessingUint;
+package dnnProcessingUnit;
 
 public class ClientDataManager {
 
