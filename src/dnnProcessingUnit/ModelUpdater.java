@@ -1,19 +1,21 @@
 package dnnProcessingUnit;
 
-import java.util.ArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import dnnUtil.dnnModel.*;
 
 public class ModelUpdater {
 
-	private ArrayList<DnnModelDelta> mDeltasToUpdate;
+	private LinkedBlockingQueue<DnnModelDelta> mDeltasToUpdate;
 
 	public ModelUpdater(){
-		mDeltasToUpdate = new ArrayList<>();
+		mDeltasToUpdate = new LinkedBlockingQueue<>();
 	}
 	
-	public void deltaChecker(DnnModelDelta delta){
-	//TODO implement	
+	/*
+	 * also adds the given delta to the toUpdate queue
+	 */
+	public void deltaChecker(DnnModelDelta delta){	
 		if(true){		//add better rule for delta checking
 			mDeltasToUpdate.add(delta);
 		}
@@ -22,8 +24,8 @@ public class ModelUpdater {
 	
 	public DnnModel rewriteModel(DnnModel oldModel){
 		DnnModel newModel = oldModel;
-		for (DnnModelDelta modelDelta : mDeltasToUpdate) {
-			newModel.updateModel(modelDelta);
+		while (!mDeltasToUpdate.isEmpty()) {
+			newModel.updateModel(mDeltasToUpdate.remove());
 		}
 		return newModel;
 	}

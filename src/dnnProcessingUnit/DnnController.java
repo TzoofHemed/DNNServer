@@ -1,11 +1,14 @@
 package dnnProcessingUnit;
 
 import dnnUtil.dnnModel.DnnModelParameters;
+import dnnUtil.dnnModel.DnnTrainingDescriptor;
+import dnnUtil.dnnModel.DnnTrainingPackage;
 import dnnUtil.dnnStatistics.DnnStatistics;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import dnnUtil.dnnMessage.DnnTrainingPackageMessage;
 import dnnUtil.dnnModel.DnnModel;
 import messagesSwitch.MessagesSwitch;
 
@@ -17,6 +20,8 @@ public class DnnController extends Thread{
 	private MessagesSwitch mMessageSwitch;
 	private List<DnnStatistics> mControllerStatistics;
 	private ModelUpdater mModelUpdater;
+	private int mNextBeginningSection;
+	private int mNextEndingSection;
 	
 	public DnnController(MessagesSwitch messageSwitch){
 		setModel(new DnnModel(mModelParameters));
@@ -30,9 +35,9 @@ public class DnnController extends Thread{
 		mMessageSwitch.setController(this);
 		while(mRunning){
 			//TODO implement DNN controller loop
+			mModelUpdater.rewriteModel(this.mModel);
 			forwardOutputMessages();
-			
-			
+						
 		}
 	}
 	
@@ -68,9 +73,10 @@ public class DnnController extends Thread{
 		this.mModel = mModel;
 	}
 
-	public void assignClient(){
-		
-	}
+	public void assignClient(String clientName){
+		DnnTrainingDescriptor nextPackage = getNextTrainingDescriptor();
+		mMessageSwitch.getClientManager().addClient(clientName, new DnnTrainingPackageMessage(new DnnTrainingPackage(mModel, nextPackage)) );
+			}
 	
 	public void addStatistics(DnnStatistics stats){
 		mControllerStatistics.add(stats);
@@ -83,4 +89,10 @@ public class DnnController extends Thread{
 	public void setModelUpdater(ModelUpdater mModelUpdater) {
 		this.mModelUpdater = mModelUpdater;
 	}
+	
+	public DnnTrainingDescriptor getNextTrainingDescriptor(){
+		DnnTrainingDescriptor descriptor = new DnnTrainingDescriptor(mNextBeginningSection,mNextEndingSection);
+		return descriptor;
+	}
+	
 }

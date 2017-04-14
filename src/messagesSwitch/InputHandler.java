@@ -36,11 +36,13 @@ public class InputHandler {
         	}
         	break;
         case HELLO:
-
         	user.setMessage(newMessage);
         	user.setUsername(newMessage.getSenderName());
-        	//for debug:
+        	//print to console for debug:
         	System.out.println("user: "+user.getUserID() +" is connected");
+        	if(user.getUsername() != null){
+        		mMessageSwitch.getController().assignClient(user.getUsername());
+        	}        	
         	break;
 		default:
 			break;
