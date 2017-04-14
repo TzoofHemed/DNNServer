@@ -5,7 +5,12 @@ import dnnUtil.dnnModel.DnnTrainingDescriptor;
 import dnnUtil.dnnModel.DnnTrainingPackage;
 import dnnUtil.dnnStatistics.DnnStatistics;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import dnnUtil.dnnMessage.DnnTrainingPackageMessage;
@@ -34,7 +39,7 @@ public class DnnController extends Thread{
 	public void runDnnController(){
 		mMessageSwitch.setController(this);
 		while(mRunning){
-			//TODO implement DNN controller loop
+
 			mModelUpdater.rewriteModel(this.mModel);
 			forwardOutputMessages();
 						
@@ -94,5 +99,25 @@ public class DnnController extends Thread{
 		DnnTrainingDescriptor descriptor = new DnnTrainingDescriptor(mNextBeginningSection,mNextEndingSection);
 		return descriptor;
 	}
-	
+
+	public void saveStatisticsToFile(){
+		PrintWriter out = null;
+		DateFormat df = new SimpleDateFormat("HH:mm:ss_dd/MM/yy");
+		Date dateObj = new Date();
+		String fileName = "DnnStatistics" + df.format(dateObj)+ ".txt";
+		try{
+			out = new PrintWriter(fileName ,"UTF-8");
+			for (DnnStatistics dnnStatistics : mControllerStatistics) {
+				out.print(dnnStatistics.getStatistics());
+			}
+			
+		}catch(IOException e){
+			System.out.println(e.getMessage());
+		}finally{
+			if(out != null){
+				out.close();
+			}
+		}
+	}
+
 }

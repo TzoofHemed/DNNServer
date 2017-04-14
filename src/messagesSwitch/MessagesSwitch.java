@@ -7,7 +7,6 @@ import dnnUtil.dnnMessage.DnnMessage;
 import tcpConectivity.TCPServer;
 import tcpConectivity.UserManager;
 
-//TODO add mutex for connected userManger array
 
 public class MessagesSwitch {
 	
@@ -23,7 +22,7 @@ public class MessagesSwitch {
 	public ClientManager getClientManager(){
 		return mClientManager;
 	}
-	//TODO add interface from and to TCPServer for getting connected array
+
 	public void setUserOutputMessage(String userName, DnnMessage message){
 		for(UserManager userManager : getServer().getConnectedUserManagers()){
 			if(userManager.getUser().getUsername() == userName){
