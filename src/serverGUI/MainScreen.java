@@ -23,6 +23,7 @@ public class MainScreen extends JFrame{
 	private DnnController mDnnController;
 	
 	
+	
 	public MainScreen(){
 		JPanel panelFields = new JPanel();
 		panelFields.setLayout(new BoxLayout(panelFields, BoxLayout.X_AXIS));
@@ -34,9 +35,10 @@ public class MainScreen extends JFrame{
         panelFields3.setLayout(new BoxLayout(panelFields3, BoxLayout.X_AXIS));
         
         mainLog = new JTextArea();
-        mainLog.setColumns(30);
+        mainLog.setColumns(60);
         mainLog.setRows(10);
         mainLog.setEditable(false);
+        
         
       
         
@@ -130,8 +132,7 @@ public class MainScreen extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				
+				mDnnController.saveStatisticsToFile();				
 			}
 		});
         
@@ -141,8 +142,8 @@ public class MainScreen extends JFrame{
 
         //add the buttons and the text fields to the panel
         panelFields.add(mainLog);
-        panelFields.add(startRxButton);
-        panelFields.add(stopRxButton);
+        panelFields3.add(startRxButton);
+        panelFields3.add(stopRxButton);
 
         panelFields2.add(serverCmd);
         panelFields2.add(sendCmd);
@@ -158,7 +159,11 @@ public class MainScreen extends JFrame{
 
         setSize(Constants.PANEL_H, Constants.PANEL_W);
         setVisible(true);
- 
+        
+        JScrollPane scrollPane = new JScrollPane(mainLog);
+        panelFields.add(scrollPane);
+
+        
         
 	}
 	/**

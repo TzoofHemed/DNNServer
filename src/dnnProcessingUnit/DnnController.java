@@ -108,7 +108,7 @@ public class DnnController extends Thread{
 		try{
 			out = new PrintWriter(fileName ,"UTF-8");
 			for (DnnStatistics dnnStatistics : mControllerStatistics) {
-				out.print(dnnStatistics.getStatistics());
+				out.print(dnnStatistics.getStatistics() + "\n ----------------------------------------------------- \n");
 			}
 			
 		}catch(IOException e){
