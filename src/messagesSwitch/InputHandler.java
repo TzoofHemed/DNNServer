@@ -3,7 +3,6 @@ package messagesSwitch;
 import dnnUtil.dnnMessage.*;
 import dnnUtil.dnnModel.DnnModelDelta;
 import dnnUtil.dnnStatistics.DnnStatistics;
-import tcpConectivity.User;
 
 public class InputHandler {
 	
@@ -13,9 +12,10 @@ public class InputHandler {
 	}
 
 	
-	public void newMessageInput(User user, DnnMessage newMessage){
+	public void newMessageInput(String clientName, DnnMessage newMessage){
         switch(newMessage.getMessageType()){
         case TEST:
+        	System.out.println("TEST user: "+ clientName +" is connected TEST\n");
 //            if (newMessage != null && managerDelegate != null) {
 //            user.setMessage(message);
 //            // notify message received action
@@ -36,12 +36,11 @@ public class InputHandler {
         	}
         	break;
         case HELLO:
-        	user.setMessage(newMessage);
-        	user.setUsername(newMessage.getSenderName());
         	//print to console for debug:
-        	System.out.println("user: "+user.getUserID() +" is connected");
-        	if(user.getUsername() != null){
-        		mMessageSwitch.getController().assignClient(user.getUsername());
+        	System.out.println("user: "+ clientName +" is connected\n");
+        	if(clientName != null){
+        		mMessageSwitch.setUserOutputMessage(clientName, new DnnTestMessage("TAKAS Demon","mother of all fork bombs"));
+//        		mMessageSwitch.getController().assignClient(clientName);
         	}        	
         	break;
 		default:

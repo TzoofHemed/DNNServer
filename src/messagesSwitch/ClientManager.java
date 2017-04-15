@@ -68,8 +68,9 @@ public class ClientManager {
 	public void addMessageToClient(String clientName, DnnMessage message){
 		if(!this.clientList.containsKey(clientName)){
 			addClient(clientName, message);
+		}else{
+			this.clientList.get(clientName).addInputMessage(message);
 		}
-		this.clientList.get(clientName).addInputMessage(message);
 	}
 
 	public ArrayList<String> getClientNames(){

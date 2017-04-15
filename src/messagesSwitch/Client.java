@@ -17,8 +17,8 @@ public class Client {
         this.clientInputMessages = new LinkedBlockingQueue<>();
         this.clientOutputMessages = new LinkedBlockingQueue<>();
     	this.Clientname = Clientname;
-        this.clientInputMessages.add(message);
         mInputHandler = inputHandler;
+        mInputHandler.newMessageInput(this.Clientname, message);
     }
 
     public InputHandler getInputHandler(){
@@ -51,6 +51,7 @@ public class Client {
 	
 	public void addInputMessage(DnnMessage message){
 			this.clientInputMessages.add(message);
+			this.mInputHandler.newMessageInput(this.Clientname, message);
 	}
 	
 	public void addOutputMessage(DnnMessage message){

@@ -57,6 +57,16 @@ public class MessagesSwitch {
 	public DnnController getController(){
 		return mController;
 	}
+	
+	public String getClientCount(){
+		String count ="";
+		int number = 0;
+		for (String clientName : mClientManager.getClientNames()){
+			number++;
+			count += number+".  " + clientName + "\n";
+		}
+		return count;		
+	}
 
 	
 }

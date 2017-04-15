@@ -30,7 +30,7 @@ public class MainScreen extends JFrame{
 
 
 	public MainScreen(){
-		mGUIHelper = new GUIHelper();
+		mGUIHelper = new GUIHelper(this);
 		JPanel panelFields = new JPanel();
 		panelFields.setLayout(new BoxLayout(panelFields, BoxLayout.X_AXIS));
 
@@ -52,48 +52,26 @@ public class MainScreen extends JFrame{
 
 
 
-		startRxButton = new JButton("Start DNN Server");
+		startRxButton = new JButton(" Start DNN Server ");
 		startRxButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				//creates the object OnMessageReceived asked by the TCPServer constructor
-				mServer = new TCPServer(new TCPServer.OnMessageReceived() {
-					@Override
-					//this method declared in the interface from TCPServer class is implemented here
-					//this method is actually a callback method, because it will run every time when it will be called from
-					//TCPServer class (at while)
-					public void messageReceived(DnnMessage message) { //TODO this is temporary print to mainLog
-						mainLog.append("\nmessage type: " + message.getMessageType() + " receidved from: "+message.getSenderName() + " message Content: " + message.getContent().toString()); //TODO add implementation for log handling
-					}
-				});
-				mServer.start();
-
-				// disable the start button and enable the stop one
-				startRxButton.setEnabled(false);
-				stopRxButton.setEnabled(true);
-
-				mDnnController = new DnnController(mServer.getMessageSwitch());
-				mDnnController.start();
+				startServer();
 			}
 		});
+		startRxButton.setBorder(BorderFactory.createLineBorder(Constants.LOG_SCREEN_FONT_COLOR));
 
-		stopRxButton = new JButton("Stop DNN Server");
+		stopRxButton = new JButton(" Stop DNN Server ");
 		stopRxButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				if (mServer != null) {
-					mServer.close();
-				}
-
-				// disable the stop button and enable the start one
-				startRxButton.setEnabled(true);
-				stopRxButton.setEnabled(false);
+				stopServer();
 
 			}
 		});
-
+		stopRxButton.setBorder(BorderFactory.createLineBorder(Constants.LOG_SCREEN_FONT_COLOR));
 
 
 		serverCmd = new JTextField();
@@ -115,13 +93,14 @@ public class MainScreen extends JFrame{
 			public void actionPerformed(ActionEvent e)
 			{
 				String cmdInput = mGUIHelper.cmdInputHandler(serverCmd.getText());
-				if(cmdInput.equals(Constants.notACmd)){
-					mainLog.append(">>" + Constants.notACmd + "\n"); //TODO actually do something with the command....	
-				}else{
-					
-				}
-				
 				serverCmd.setText("");
+				if(cmdInput.equals(Constants.notACmd)){
+					mainLog.append(">>" + Constants.notACmd + "\n");	
+				}else{
+					mGUIHelper.cmdPrompt(cmdInput.split(Constants.delimiter));					
+				}		
+				
+				
 			}
 		};
 
@@ -133,38 +112,17 @@ public class MainScreen extends JFrame{
 
 
 
-		showIpButton = new JButton("Server IP");
+		showIpButton = new JButton(" Server IP ");
 		showIpButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Enumeration<NetworkInterface> n = null;
-				try {
-					n = NetworkInterface.getNetworkInterfaces();
-				} catch (SocketException e1) {
-					e1.printStackTrace();
-				}
-				while(n.hasMoreElements())
-				{
-					NetworkInterface NI = n.nextElement();
-
-					Enumeration<InetAddress> a = NI.getInetAddresses();
-					while (a.hasMoreElements())
-					{
-						InetAddress addr = a.nextElement();
-						String IpAddress = addr.getHostAddress();
-						if(IpAddress.contains("192.168.")){
-							System.out.println("  " + IpAddress);
-							mainLog.append(">>" +"Server Ip: "+IpAddress+ "\n");
-						}
-
-					}
-				}
+				getIp();
 
 			}
 		});
-
-		saveLogButton = new JButton("Save Log");
+		showIpButton.setBorder(BorderFactory.createLineBorder(Constants.LOG_SCREEN_FONT_COLOR));
+		saveLogButton = new JButton(" Save Log ");
 		saveLogButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -177,7 +135,7 @@ public class MainScreen extends JFrame{
 				}
 			}
 		});
-
+		saveLogButton.setBorder(BorderFactory.createLineBorder(Constants.LOG_SCREEN_FONT_COLOR));
 
 		//add the buttons and the text fields to the panel
 		panelFields.add(mainLog);
@@ -218,6 +176,73 @@ public class MainScreen extends JFrame{
 		getContentPane().setBackground(Color.ORANGE);
 
 	}
+	public DnnController getController(){
+		return mDnnController;
+	}
+	
+	public JTextArea getMainLog(){
+		return mainLog;
+	}
+	
+	public void startServer(){
+		//creates the object OnMessageReceived asked by the TCPServer constructor
+		mServer = new TCPServer(new TCPServer.OnMessageReceived() {
+			@Override
+			//this method declared in the interface from TCPServer class is implemented here
+			//this method is actually a callback method, because it will run every time when it will be called from
+			//TCPServer class (at while)
+			public void messageReceived(DnnMessage message) { 
+				mainLog.append("\nmessage type: " + message.getMessageType() + " from: "+ message.getSenderName() + " Content: " + message.getContent().toString()); 
+			}
+		});
+		mServer.start();
+
+		// disable the start button and enable the stop one
+		startRxButton.setEnabled(false);
+		stopRxButton.setEnabled(true);
+
+		mDnnController = new DnnController(mServer.getMessageSwitch());
+		mDnnController.start();
+	}
+	
+	public void stopServer() {
+		if (mServer != null) {
+			mServer.close();
+		}
+
+		// disable the stop button and enable the start one
+		startRxButton.setEnabled(true);
+		stopRxButton.setEnabled(false);
+
+	}
+	
+	public void getIp(){
+		Enumeration<NetworkInterface> n = null;
+		try {
+			n = NetworkInterface.getNetworkInterfaces();
+		} catch (SocketException e1) {
+			e1.printStackTrace();
+		}
+		while(n.hasMoreElements())
+		{
+			NetworkInterface NI = n.nextElement();
+
+			Enumeration<InetAddress> a = NI.getInetAddresses();
+			while (a.hasMoreElements())
+			{
+				InetAddress addr = a.nextElement();
+				String IpAddress = addr.getHostAddress();
+				if(IpAddress.contains("192.168.")){
+					System.out.println("  " + IpAddress);
+					mainLog.append(">>" +"Server Ip: "+IpAddress+ "\n");
+				}
+
+			}
+		}
+	}
+
+	
+	
 	/**
 	 * 
 	 */

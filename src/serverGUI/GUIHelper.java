@@ -1,10 +1,13 @@
 package serverGUI;
 
+import javax.swing.JOptionPane;
+
 public class GUIHelper {
-	public GUIHelper(){
-		
+	private MainScreen mGUI;
+	public GUIHelper(MainScreen gui){
+		mGUI = gui;
 	}
-	
+
 	public String cmdInputHandler( String cmd){
 		String hCmd = cmd;
 		hCmd = hCmd.replaceAll("\\s+","");
@@ -21,6 +24,45 @@ public class GUIHelper {
 			hCmd += Constants.delimiter + splitCmd[1];
 		}
 		return hCmd;
+	}
+
+	public void cmdPrompt(String[] cmd){
+		mGUI.getMainLog().append("\n>>"+ String.join(Constants.delimiter, cmd)+ "\n");
+		switch (cmd[0]){
+		case Constants.printStatistics:
+			mGUI.getMainLog().append(mGUI.getController().getTrainingStatistics()+ "\n");
+			break;
+		case Constants.printTrainerStatistics:
+			mGUI.getMainLog().append(mGUI.getController().getTrainerStatistics(cmd[1]) + "\n");
+			break;
+		case Constants.saveStatistics:
+			mGUI.getController().saveStatisticsToFile();
+			mGUI.getMainLog().append("Statistics were saved\n");
+			break;
+		case Constants.resetModel:
+			mGUI.getController().resetModel();
+			mGUI.getMainLog().append("Model is reset\n");
+			break;
+		case Constants.trainersCount:
+			mGUI.getMainLog().append( mGUI.getController().getTrainerCount() + "\n");
+			break;
+		case Constants.help:
+			JOptionPane.showMessageDialog(mGUI, Constants.getHelp(),"HELP!",JOptionPane.PLAIN_MESSAGE);
+			break;
+		case Constants.ip:
+			mGUI.getIp();
+			break;
+		case Constants.stop:
+			mGUI.stopServer();
+			mGUI.getMainLog().append("server was stopped \n");
+			break;
+		case Constants.start:
+			mGUI.startServer();
+			mGUI.getMainLog().append("server was started \n");
+			break;
+		default:
+			break;
+		}
 	}
 
 }

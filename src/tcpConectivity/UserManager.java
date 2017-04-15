@@ -122,6 +122,7 @@ public class UserManager extends Thread {
     public void sendMessage(DnnMessage message) {
         if (bufferSender != null ) {
         	try {
+        		System.out.println("message sent\n");
 				bufferSender.writeObject(message);
 			} catch (IOException e) {
 				System.out.println(e.toString());

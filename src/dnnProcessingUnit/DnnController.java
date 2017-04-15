@@ -126,5 +126,31 @@ public class DnnController extends Thread{
 			}
 		}
 	}
+	
+	public String getTrainingStatistics(){
+		String statistics = "";
+		for (DnnStatistics dnnStatistics : mControllerStatistics) {
+			statistics += dnnStatistics.getStatistics() + "\n ----------------------------------------------------- \n";
+		}
+		
+		return statistics;
+	}
 
+	public String getTrainerStatistics(String ClientName){
+		String statistics = "";
+		for (DnnStatistics dnnStatistics : mControllerStatistics) {
+			if(dnnStatistics.getClientName().equals(ClientName)){
+				statistics += dnnStatistics.getStatistics() + "\n ----------------------------------------------------- \n";
+			}
+		}		
+		return statistics;
+	}
+	
+	public void resetModel(){
+		mModel = new DnnModel(mModelParameters);
+	}
+	
+	public String getTrainerCount(){
+		return mMessageSwitch.getClientCount();		
+	}
 }
