@@ -1,11 +1,15 @@
 package serverGUI;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 
 import dnnProcessingUnit.DnnController;
 import dnnUtil.dnnMessage.DnnMessage;
 import tcpConectivity.TCPServer;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.*;
@@ -38,9 +42,12 @@ public class MainScreen extends JFrame{
         mainLog.setColumns(60);
         mainLog.setRows(10);
         mainLog.setEditable(false);
+        mainLog.setForeground(Constants.LOG_SCREEN_FONT_COLOR);
+        mainLog.setBackground(Constants.LOG_SCREEN_BACKGROUND_COLOR);
         
+        Font mainLogFont = new Font("SansSerif", Font.BOLD, 12);
+        mainLog.setFont(mainLogFont);
         
-      
         
         
         startRxButton = new JButton("Start DNN Server");
@@ -85,15 +92,37 @@ public class MainScreen extends JFrame{
             }
         });
         
-        sendCmd = new JButton("Send CMD");
-        sendCmd.addActionListener(new ActionListener() {
-			
+        
+        
+        serverCmd = new JTextField();
+        serverCmd.setSize(Constants.CMD_FIELD_W, Constants.CMD_FIELD_H);
+        serverCmd.setForeground(Constants.CMD_FONT_COLOR);
+        serverCmd.setBackground(Constants.CMD_BACKGROUND_COLOR);
+        Font cmdFont = new Font("SansSerif", Font.BOLD, 12);  
+        
+        serverCmd.setFont(cmdFont); 
+        
+        Action hitCmdAction = new AbstractAction()
+        {
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
+            public void actionPerformed(ActionEvent e)
+            {
+                System.out.println("cmd was hit\n"); //TODO actually do something with the command....
+            }
+        };
+
+        serverCmd.addActionListener( hitCmdAction );
+        
+        
+        sendCmd = new JButton("Send CMD");
+        sendCmd.addActionListener(hitCmdAction);
+        
+        
         
         showIpButton = new JButton("Server IP");
         showIpButton.addActionListener(new ActionListener() {
@@ -136,10 +165,7 @@ public class MainScreen extends JFrame{
 			}
 		});
         
-        //the box where the user enters the text (EditText is called in Android)
-        serverCmd = new JTextField();
-        serverCmd.setSize(Constants.CMD_FIELD_W, Constants.CMD_FIELD_H);
-
+ 
         //add the buttons and the text fields to the panel
         panelFields.add(mainLog);
         panelFields3.add(startRxButton);
@@ -151,19 +177,32 @@ public class MainScreen extends JFrame{
         panelFields3.add(showIpButton);
         panelFields3.add(saveLogButton);
         
+        panelFields2.setPreferredSize(new Dimension(Constants.CMD_FIELD_W, Constants.CMD_FIELD_H));
+        panelFields.setPreferredSize(new Dimension(Constants.MAIN_LOG_W, Constants.MAIN_LOG_W));
+        
         getContentPane().add(panelFields);
         getContentPane().add(panelFields2);
         getContentPane().add(panelFields3);
 
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
-        setSize(Constants.PANEL_H, Constants.PANEL_W);
+        setPreferredSize(new Dimension(Constants.PANEL_W, Constants.PANEL_H));
         setVisible(true);
         
         JScrollPane scrollPane = new JScrollPane(mainLog);
         panelFields.add(scrollPane);
 
+        panelFields.setBackground(Color.DARK_GRAY);
+        panelFields2.setBackground(Color.PINK);
+        panelFields3.setBackground(Color.DARK_GRAY);
+        Border cyanBorder = BorderFactory.createLineBorder(Color.CYAN, 12);
+        Border pinkBorder = BorderFactory.createLineBorder(Color.PINK, 12);
+        Border orangeBorder = BorderFactory.createLineBorder(Color.ORANGE, 12);
+        panelFields.setBorder(cyanBorder);
+        panelFields2.setBorder(pinkBorder);
+        panelFields3.setBorder(orangeBorder);
         
+        getContentPane().setBackground(Color.ORANGE);
         
 	}
 	/**
