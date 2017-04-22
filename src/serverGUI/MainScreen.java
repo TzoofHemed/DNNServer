@@ -12,6 +12,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.net.*;
 import java.util.Enumeration;
 
@@ -81,12 +82,10 @@ public class MainScreen extends JFrame{
 		Font cmdFont = new Font("SansSerif", Font.BOLD, 12);  
 
 		serverCmd.setFont(cmdFont); 
-
+		
 		Action hitCmdAction = new AbstractAction()
 		{
-			/**
-			 * 
-			 */
+
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -159,7 +158,10 @@ public class MainScreen extends JFrame{
 
 		setPreferredSize(new Dimension(Constants.PANEL_W, Constants.PANEL_H));
 		setVisible(true);
-
+		serverCmd.setCaretColor(Color.CYAN);
+		
+		serverCmd.requestFocus();
+		
 		JScrollPane scrollPane = new JScrollPane(mainLog);
 		panelFields.add(scrollPane);
 
@@ -240,12 +242,12 @@ public class MainScreen extends JFrame{
 			}
 		}
 	}
+	
+	public void CloseGUI(){
+		this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+	}
 
-	
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 }

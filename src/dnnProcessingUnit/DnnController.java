@@ -81,7 +81,7 @@ public class DnnController extends Thread{
 
 	public void assignClient(String clientName){
 		DnnTrainingDescriptor nextPackage = getNextTrainingDescriptor();
-		mMessageSwitch.getClientManager().addClient(clientName, new DnnTrainingPackageMessage(new DnnTrainingPackage(mModel, nextPackage)) );
+		mMessageSwitch.getClientManager().addClient(clientName, new DnnTrainingPackageMessage(new DnnTrainingPackage(mModel.getModelDescriptor(), nextPackage)) );
 	}
 
 	public void addStatistics(DnnStatistics stats){

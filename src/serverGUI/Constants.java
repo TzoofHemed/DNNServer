@@ -34,9 +34,10 @@ public class Constants {
 	public final static String ip = "ip";
 	public final static String start = "start";
 	public final static String stop = "stop";
+	public final static String quit = "quit";
 	
 	public final static List<String> getAvailableCmds(){
-		List<String> availableCmd = new ArrayList<>(Arrays.asList(printStatistics,saveStatistics,printTrainerStatistics,resetModel,trainersCount,help,ip,start,stop));
+		List<String> availableCmd = new ArrayList<>(Arrays.asList(printStatistics,saveStatistics,printTrainerStatistics,resetModel,trainersCount,help,ip,start,stop,quit));
 		return availableCmd;
 	}
 	
@@ -50,6 +51,7 @@ public class Constants {
 		helpMenu += ip + "\t\t"+ " - show the server ip"+"\n";
 		helpMenu += start + "\t\t"+ " - start the server"+"\n";
 		helpMenu += stop + "\t\t"+ " - stop the server"+"\n";
+		helpMenu += quit + "\t\t"+ " - quit DNN server app"+"\n";
 		helpMenu += help + "\t\t"+ " - this message"+"\n";
 		return helpMenu;
 	}

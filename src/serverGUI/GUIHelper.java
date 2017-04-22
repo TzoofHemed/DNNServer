@@ -60,6 +60,9 @@ public class GUIHelper {
 			mGUI.startServer();
 			mGUI.getMainLog().append("server was started \n");
 			break;
+		case Constants.quit:
+			mGUI.CloseGUI();
+			break;
 		default:
 			break;
 		}
