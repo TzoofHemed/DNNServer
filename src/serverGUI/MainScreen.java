@@ -57,8 +57,9 @@ public class MainScreen extends JFrame{
 		startRxButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				mainLog.append("server is starting, please wait...\n");
 				startServer();
+				mainLog.append("server is started\n");
 			}
 		});
 		startRxButton.setBorder(BorderFactory.createLineBorder(Constants.LOG_SCREEN_FONT_COLOR));

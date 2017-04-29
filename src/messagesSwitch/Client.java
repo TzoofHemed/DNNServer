@@ -3,6 +3,7 @@ package messagesSwitch;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import dnnUtil.dnnMessage.*;
+import messagesSwitch.ClientConstants.ClientStatus;
 
 
 public class Client {
@@ -12,6 +13,7 @@ public class Client {
     private final BlockingQueue<DnnMessage> clientInputMessages;
     private final BlockingQueue<DnnMessage> clientOutputMessages;
     private InputHandler mInputHandler;
+    private ClientStatus mStatus;
     
     public Client(String Clientname, DnnMessage message, InputHandler inputHandler) {
         this.clientInputMessages = new LinkedBlockingQueue<>();
@@ -19,6 +21,7 @@ public class Client {
     	this.Clientname = Clientname;
         mInputHandler = inputHandler;
         mInputHandler.newMessageInput(this.Clientname, message);
+        setStatus(ClientStatus.Busy);
     }
 
     public InputHandler getInputHandler(){
@@ -57,6 +60,14 @@ public class Client {
 	public void addOutputMessage(DnnMessage message){
 		this.clientOutputMessages.add(message);
 
+	}
+
+	public ClientStatus getStatus() {
+		return mStatus;
+	}
+
+	public void setStatus(ClientStatus mStatus) {
+		this.mStatus = mStatus;
 	}
 	
 }

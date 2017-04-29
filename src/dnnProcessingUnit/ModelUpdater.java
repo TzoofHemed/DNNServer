@@ -16,14 +16,14 @@ public class ModelUpdater {
 	 * also adds the given delta to the toUpdate queue
 	 */
 	public void deltaChecker(DnnModelDelta delta){	
-		if(true){		//add better rule for delta checking
+		if(true){		//add better rule for delta checking...
 			mDeltasToUpdate.add(delta);
 		}
 	}
 
 	
-	public DnnModel rewriteModel(DnnModel oldModel){
-		DnnModel newModel = oldModel;
+	public DnnServerModel rewriteModel(DnnServerModel oldModel){
+		DnnServerModel newModel = oldModel;
 		while (!mDeltasToUpdate.isEmpty()) {
 			newModel.updateModel(mDeltasToUpdate.remove());
 		}

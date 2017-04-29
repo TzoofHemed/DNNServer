@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import dnnUtil.dnnMessage.*;
+import messagesSwitch.ClientConstants.ClientStatus;
 
 
 public class ClientManager {
@@ -81,5 +82,8 @@ public class ClientManager {
 			clientNames.add(key);
 		}
 		return clientNames;
+	}
+	public void changeClientStatus(String clientName, ClientStatus status){
+		this.clientList.get(clientName).setStatus(status);
 	}
 }

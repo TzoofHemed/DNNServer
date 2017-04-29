@@ -1,11 +1,13 @@
 package messagesSwitch;
 
-import javax.annotation.Generated;
-
 import dnnUtil.dnnMessage.*;
 import dnnUtil.dnnModel.DnnModelDelta;
+import dnnUtil.dnnModel.DnnModelDescriptor;
+import dnnUtil.dnnModel.DnnTrainingData;
+import dnnUtil.dnnModel.DnnTrainingDescriptor;
 import dnnUtil.dnnModel.DnnTrainingPackage;
 import dnnUtil.dnnStatistics.DnnStatistics;
+import messagesSwitch.ClientConstants.ClientStatus;
 
 public class InputHandler {
 	
@@ -29,6 +31,7 @@ public class InputHandler {
         case DELTA:
         	if(newMessage.getContent() instanceof DnnModelDelta){
         		mMessageSwitch.getController().getModelUpdater().deltaChecker((DnnModelDelta)newMessage.getContent());
+        		mMessageSwitch.getClientManager().changeClientStatus(newMessage.getSenderName(), ClientStatus.Free);
         	}
         	break;
         case STRING:
@@ -40,10 +43,14 @@ public class InputHandler {
         	break;
         case HELLO:
         	//print to console for debug:
-        	System.out.println("user: "+ clientName +" is connected\n");
+        	System.out.println("user: "+ clientName +" is connected!\n");
         	if(clientName != null){
 //        		mMessageSwitch.setUserOutputMessage(clientName, new DnnTestMessage("TAKAS Demon","mother of all fork bombs"));
-        		mMessageSwitch.setUserOutputMessage(clientName, new DnnTrainingPackageMessage(new DnnTrainingPackage(mMessageSwitch.getController().getModel().getModelDescriptor(), mMessageSwitch.getController().getNextTrainingDescriptor())));
+        		DnnModelDescriptor modelDescriptor = mMessageSwitch.getController().getModel().getModelDescriptor();
+        		DnnTrainingDescriptor trainingDescriptor = mMessageSwitch.getController().getNextTrainingDescriptor();
+        		DnnTrainingData trainingData = mMessageSwitch.getController().getModel().getTrainingData(trainingDescriptor);
+        		mMessageSwitch.setUserOutputMessage(clientName, new DnnTrainingPackageMessage(new DnnTrainingPackage(modelDescriptor, trainingData)));
+
 //        		mMessageSwitch.getController().assignClient(clientName);
 //        		mMessageSwitch.setUserOutputMessage(clientName, mMessageSwitch.getClientManager().getClientLastOutputMessage(clientName));
         	}        	

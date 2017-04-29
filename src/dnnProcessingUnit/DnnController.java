@@ -1,6 +1,8 @@
 package dnnProcessingUnit;
 
 import dnnUtil.dnnModel.DnnModelParameters;
+import dnnUtil.dnnModel.DnnServerModel;
+import dnnUtil.dnnModel.DnnTrainingData;
 import dnnUtil.dnnModel.DnnTrainingDescriptor;
 import dnnUtil.dnnModel.DnnTrainingPackage;
 import dnnUtil.dnnStatistics.DnnStatistics;
@@ -21,7 +23,7 @@ import messagesSwitch.MessagesSwitch;
 public class DnnController extends Thread{
 
 	private boolean mRunning;
-	private DnnModel mModel;
+	private DnnServerModel mModel;
 	private DnnModelParameters mModelParameters;
 	private MessagesSwitch mMessageSwitch;
 	private List<DnnStatistics> mControllerStatistics;
@@ -30,10 +32,12 @@ public class DnnController extends Thread{
 	private int mNextEndingSection;
 
 	public DnnController(MessagesSwitch messageSwitch){
-		setModel(new DnnModel(mModelParameters));
+		setModel(new DnnServerModel(mModelParameters));
 		mMessageSwitch = messageSwitch;
 		mControllerStatistics = new ArrayList<>();
 		setModelUpdater(new ModelUpdater());
+		mNextBeginningSection = 0;
+		mNextEndingSection = 100; 
 
 	}
 
@@ -72,16 +76,17 @@ public class DnnController extends Thread{
 	public void setmModelConstatns(DnnModelParameters mModelConstatns) {
 		this.mModelParameters = mModelConstatns;
 	}
-	public DnnModel getModel() {
+	public DnnServerModel getModel() {
 		return mModel;
 	}
-	public void setModel(DnnModel mModel) {
+	public void setModel(DnnServerModel mModel) {
 		this.mModel = mModel;
 	}
 
 	public void assignClient(String clientName){
 		DnnTrainingDescriptor nextPackage = getNextTrainingDescriptor();
-		mMessageSwitch.getClientManager().addClient(clientName, new DnnTrainingPackageMessage(new DnnTrainingPackage(mModel.getModelDescriptor(), nextPackage)) );
+		DnnTrainingData nextData = mModel.getTrainingData(nextPackage);
+		mMessageSwitch.getClientManager().addClient(clientName, new DnnTrainingPackageMessage(new DnnTrainingPackage(mModel.getModelDescriptor(), nextData)) );
 	}
 
 	public void addStatistics(DnnStatistics stats){
@@ -98,6 +103,10 @@ public class DnnController extends Thread{
 
 	public DnnTrainingDescriptor getNextTrainingDescriptor(){
 		DnnTrainingDescriptor descriptor = new DnnTrainingDescriptor(mNextBeginningSection,mNextEndingSection);
+		if(mNextEndingSection <= mModel.getNumberOfTrainingObjects()){
+			mNextBeginningSection += 100;
+			mNextEndingSection += 100;
+		}
 		return descriptor;
 	}
 
@@ -147,7 +156,7 @@ public class DnnController extends Thread{
 	}
 	
 	public void resetModel(){
-		mModel = new DnnModel(mModelParameters);
+		mModel = new DnnServerModel(mModelParameters);
 	}
 	
 	public String getTrainerCount(){

@@ -57,10 +57,13 @@ public class GUIHelper {
 			mGUI.getMainLog().append("server was stopped \n");
 			break;
 		case Constants.start:
+			mGUI.getMainLog().append("server is starting, please wait... \n");
 			mGUI.startServer();
 			mGUI.getMainLog().append("server was started \n");
 			break;
 		case Constants.quit:
+			mGUI.stopServer();
+			mGUI.getMainLog().append("server was stopped, quiting... \n");
 			mGUI.CloseGUI();
 			break;
 		default:
