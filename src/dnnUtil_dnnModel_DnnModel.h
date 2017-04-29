@@ -7,6 +7,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#undef dnnUtil_dnnModel_DnnModel_serialVersionUID
+#define dnnUtil_dnnModel_DnnModel_serialVersionUID 1LL
 /*
  * Class:     dnnUtil_dnnModel_DnnModel
  * Method:    jniCreateModel
@@ -42,10 +44,18 @@ JNIEXPORT jbyteArray JNICALL Java_dnnUtil_dnnModel_DnnModel_jniTrainModel
 /*
  * Class:     dnnUtil_dnnModel_DnnModel
  * Method:    jniLoadTrainingData
- * Signature: ()V
+ * Signature: ()I
  */
-JNIEXPORT void JNICALL Java_dnnUtil_dnnModel_DnnModel_jniLoadTrainingData
+JNIEXPORT jint JNICALL Java_dnnUtil_dnnModel_DnnModel_jniLoadTrainingData
   (JNIEnv *, jobject);
+
+/*
+ * Class:     dnnUtil_dnnModel_DnnModel
+ * Method:    jniGetTraingData
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_dnnUtil_dnnModel_DnnModel_jniGetTraingData
+  (JNIEnv *, jobject, jint, jint);
 
 #ifdef __cplusplus
 }

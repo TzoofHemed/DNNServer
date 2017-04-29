@@ -22,8 +22,8 @@ public class ModelUpdater {
 	}
 
 	
-	public DnnServerModel rewriteModel(DnnServerModel oldModel){
-		DnnServerModel newModel = oldModel;
+	public DnnModel rewriteModel(DnnModel oldModel){
+		DnnModel newModel = oldModel;
 		while (!mDeltasToUpdate.isEmpty()) {
 			newModel.updateModel(mDeltasToUpdate.remove());
 		}

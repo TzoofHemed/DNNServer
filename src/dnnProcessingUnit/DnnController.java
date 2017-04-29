@@ -1,7 +1,7 @@
 package dnnProcessingUnit;
 
 import dnnUtil.dnnModel.DnnModelParameters;
-import dnnUtil.dnnModel.DnnServerModel;
+import dnnUtil.dnnModel.DnnModel;
 import dnnUtil.dnnModel.DnnTrainingData;
 import dnnUtil.dnnModel.DnnTrainingDescriptor;
 import dnnUtil.dnnModel.DnnTrainingPackage;
@@ -17,13 +17,12 @@ import java.util.Date;
 import java.util.List;
 
 import dnnUtil.dnnMessage.DnnTrainingPackageMessage;
-import dnnUtil.dnnModel.DnnModel;
 import messagesSwitch.MessagesSwitch;
 
 public class DnnController extends Thread{
 
 	private boolean mRunning;
-	private DnnServerModel mModel;
+	private DnnModel mModel;
 	private DnnModelParameters mModelParameters;
 	private MessagesSwitch mMessageSwitch;
 	private List<DnnStatistics> mControllerStatistics;
@@ -32,7 +31,7 @@ public class DnnController extends Thread{
 	private int mNextEndingSection;
 
 	public DnnController(MessagesSwitch messageSwitch){
-		setModel(new DnnServerModel(mModelParameters));
+		setModel(new DnnModel(mModelParameters));
 		mMessageSwitch = messageSwitch;
 		mControllerStatistics = new ArrayList<>();
 		setModelUpdater(new ModelUpdater());
@@ -76,10 +75,10 @@ public class DnnController extends Thread{
 	public void setmModelConstatns(DnnModelParameters mModelConstatns) {
 		this.mModelParameters = mModelConstatns;
 	}
-	public DnnServerModel getModel() {
+	public DnnModel getModel() {
 		return mModel;
 	}
-	public void setModel(DnnServerModel mModel) {
+	public void setModel(DnnModel mModel) {
 		this.mModel = mModel;
 	}
 
@@ -156,7 +155,7 @@ public class DnnController extends Thread{
 	}
 	
 	public void resetModel(){
-		mModel = new DnnServerModel(mModelParameters);
+		mModel = new DnnModel(mModelParameters);
 	}
 	
 	public String getTrainerCount(){
