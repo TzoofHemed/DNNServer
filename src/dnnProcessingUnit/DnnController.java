@@ -29,6 +29,7 @@ public class DnnController extends Thread{
 	private ModelUpdater mModelUpdater;
 	private int mNextBeginningSection;
 	private int mNextEndingSection;
+	private ClientDataManager mClientDataManager;
 
 	public DnnController(MessagesSwitch messageSwitch){
 		setModel(new DnnModel(mModelParameters));
@@ -37,7 +38,7 @@ public class DnnController extends Thread{
 		setModelUpdater(new ModelUpdater());
 		mNextBeginningSection = 0;
 		mNextEndingSection = 100; 
-
+		mClientDataManager = new ClientDataManager(this);
 	}
 
 	public void runDnnController(){
@@ -49,6 +50,8 @@ public class DnnController extends Thread{
 
 		}
 	}
+	
+	//TODO add methods for updating clientDataManager
 
 	private void forwardOutputMessages(){
 		mMessageSwitch.updateOutputMessages();
