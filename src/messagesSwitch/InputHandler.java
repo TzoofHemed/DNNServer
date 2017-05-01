@@ -50,6 +50,7 @@ public class InputHandler {
         		DnnTrainingDescriptor trainingDescriptor = mMessageSwitch.getController().getNextTrainingDescriptor();
         		DnnTrainingData trainingData = mMessageSwitch.getController().getModel().getTrainingData(trainingDescriptor);
         		mMessageSwitch.setUserOutputMessage(clientName, new DnnTrainingPackageMessage(new DnnTrainingPackage(modelDescriptor, trainingData)));
+        		mMessageSwitch.getController().assignSection(clientName);
 
 //        		mMessageSwitch.getController().assignClient(clientName);
 //        		mMessageSwitch.setUserOutputMessage(clientName, mMessageSwitch.getClientManager().getClientLastOutputMessage(clientName));

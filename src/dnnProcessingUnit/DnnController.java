@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import dnnProcessingUnit.ClientDataManager.SectionStatus;
 import dnnUtil.dnnMessage.DnnTrainingPackageMessage;
 import messagesSwitch.MessagesSwitch;
 
@@ -30,6 +31,7 @@ public class DnnController extends Thread{
 	private int mNextBeginningSection;
 	private int mNextEndingSection;
 	private ClientDataManager mClientDataManager;
+	private int mSectionLength;
 
 	public DnnController(MessagesSwitch messageSwitch){
 		setModel(new DnnModel(mModelParameters));
@@ -39,10 +41,12 @@ public class DnnController extends Thread{
 		mNextBeginningSection = 0;
 		mNextEndingSection = 100; 
 		mClientDataManager = new ClientDataManager(this);
+		mSectionLength = 100;
 	}
 
 	public void runDnnController(){
 		mMessageSwitch.setController(this);
+		mClientDataManager.Init();
 		while(mRunning){
 
 			mModelUpdater.rewriteModel(this.mModel);
@@ -51,8 +55,14 @@ public class DnnController extends Thread{
 		}
 	}
 	
-	//TODO add methods for updating clientDataManager
-
+	public void updateSectionStatus(String clientName, SectionStatus status, float successRate){
+		mClientDataManager.updateSection(clientName,status,successRate);
+	}
+	public void assignSection(String clientName){
+		mClientDataManager.assignSection(clientName);
+	}
+	
+	
 	private void forwardOutputMessages(){
 		mMessageSwitch.updateOutputMessages();
 	}
@@ -71,6 +81,12 @@ public class DnnController extends Thread{
 		mRunning =false;
 	}
 
+	public int getSectionLength(){
+		return mSectionLength;
+	}
+	public void setSectionLength(int sectionLength){
+		mSectionLength = sectionLength;
+	}
 
 	public DnnModelParameters getmModelConstatns() {
 		return mModelParameters;
