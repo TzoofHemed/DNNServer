@@ -6,26 +6,32 @@ import dnnUtil.dnnModel.*;
 
 public class ModelUpdater {
 
-	private LinkedBlockingQueue<DnnModelDelta> mDeltasToUpdate;
+	private LinkedBlockingQueue<DnnWeightsData> mWeightsToUpdate;
 
 	public ModelUpdater(){
-		mDeltasToUpdate = new LinkedBlockingQueue<>();
-	}
-	
+		mWeightsToUpdate = new LinkedBlockingQueue<>();
+	}	
 	/*
 	 * also adds the given delta to the toUpdate queue
 	 */
-	public void deltaChecker(DnnModelDelta delta){	
-		if(true){		//add better rule for delta checking...
-			mDeltasToUpdate.add(delta);
+	public void weightChecker(DnnWeightsData weight){	
+		if(true){		//TODO add better rule for delta checking...
+			mWeightsToUpdate.add(weight);
 		}
 	}
-
+	
+	public void mergeWeights(){
+		for (int WDIndex = 0; WDIndex < mWeightsToUpdate.size(); WDIndex++) {
+			DnnWeightsData weightData = mWeightsToUpdate.remove();
+			
+			
+		}
+	}
 	
 	public DnnModel rewriteModel(DnnModel oldModel){
 		DnnModel newModel = oldModel;
-		while (!mDeltasToUpdate.isEmpty()) {
-			newModel.updateModel(mDeltasToUpdate.remove());
+		while (!mWeightsToUpdate.isEmpty()) {
+			newModel.setWeightsData(mWeightsToUpdate.remove());
 		}
 		return newModel;
 	}
