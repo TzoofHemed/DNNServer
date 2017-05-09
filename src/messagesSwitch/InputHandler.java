@@ -1,11 +1,11 @@
 package messagesSwitch;
 
 import dnnUtil.dnnMessage.*;
-import dnnUtil.dnnModel.DnnModelDelta;
 import dnnUtil.dnnModel.DnnModelDescriptor;
 import dnnUtil.dnnModel.DnnTrainingData;
 import dnnUtil.dnnModel.DnnTrainingDescriptor;
 import dnnUtil.dnnModel.DnnTrainingPackage;
+import dnnUtil.dnnModel.DnnWeightsData;
 import dnnUtil.dnnStatistics.DnnStatistics;
 import messagesSwitch.ClientConstants.ClientStatus;
 
@@ -18,6 +18,7 @@ public class InputHandler {
 
 	
 	public void newMessageInput(String clientName, DnnMessage newMessage){
+		Object messageContent = newMessage.getContent();
         switch(newMessage.getMessageType()){
         case TEST:
         	System.out.println("TEST user: "+ clientName +" is connected TEST\n");
@@ -28,16 +29,17 @@ public class InputHandler {
         	break;
         case MODEL:
         	break;
-        case DELTA:
-        	if(newMessage.getContent() instanceof DnnModelDelta){
-        		mMessageSwitch.getController().getModelUpdater().deltaChecker((DnnModelDelta)newMessage.getContent());
-        		mMessageSwitch.getClientManager().changeClientStatus(newMessage.getSenderName(), ClientStatus.Free);
+        case WEIGHTS:
+        	//TODO update statistics, update clientDataManager
+        	if(messageContent instanceof DnnWeightsData){
+        		mMessageSwitch.getController().getModelUpdater().weightChecker((DnnWeightsData)messageContent);
+        		mMessageSwitch.getClientManager().changeClientStatus(newMessage.getSenderName(), ClientStatus.OutOfDate);
         	}
         	break;
         case STRING:
         	break;
         case STATISTICS:
-        	if(newMessage.getContent() instanceof DnnStatistics){
+        	if(messageContent instanceof DnnStatistics){
         		mMessageSwitch.getController().addStatistics((DnnStatistics)newMessage.getContent());
         	}
         	break;
