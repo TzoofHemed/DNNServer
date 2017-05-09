@@ -4,7 +4,6 @@ import dnnUtil.dnnMessage.*;
 import dnnUtil.dnnModel.DnnModelDescriptor;
 import dnnUtil.dnnModel.DnnTrainingData;
 import dnnUtil.dnnModel.DnnTrainingDescriptor;
-import dnnUtil.dnnModel.DnnTrainingPackage;
 import dnnUtil.dnnModel.DnnWeightsData;
 import dnnUtil.dnnStatistics.DnnStatistics;
 import messagesSwitch.ClientConstants.ClientStatus;
@@ -27,36 +26,31 @@ public class InputHandler {
 //            // notify message received action
 //            managerDelegate.messageReceived(user, null);
         	break;
-        case MODEL:
+        case READY:
+    		DnnTrainingDescriptor trainingDescriptor = mMessageSwitch.getController().getNextTrainingDescriptor();
+    		DnnTrainingData trainingData = mMessageSwitch.getController().getModel().getTrainingData(trainingDescriptor);
+    		mMessageSwitch.setUserOutputMessage(clientName, new DnnTrainingDataMessage(trainingData)); 
+    		mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.Busy);
         	break;
         case WEIGHTS:
         	//TODO update statistics, update clientDataManager
-        	if(messageContent instanceof DnnWeightsData){
         		mMessageSwitch.getController().getModelUpdater().weightChecker((DnnWeightsData)messageContent);
-        		mMessageSwitch.getClientManager().changeClientStatus(newMessage.getSenderName(), ClientStatus.OutOfDate);
-        	}
+        		mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.OutOfDate);
         	break;
         case STRING:
         	break;
         case STATISTICS:
-        	if(messageContent instanceof DnnStatistics){
         		mMessageSwitch.getController().addStatistics((DnnStatistics)newMessage.getContent());
-        	}
         	break;
         case HELLO:
-        	//print to console for debug:
         	System.out.println("user: "+ clientName +" is connected!\n");
         	if(clientName != null){
-//        		mMessageSwitch.setUserOutputMessage(clientName, new DnnTestMessage("TAKAS Demon","mother of all fork bombs"));
         		DnnModelDescriptor modelDescriptor = mMessageSwitch.getController().getModel().getModelDescriptor();
-        		DnnTrainingDescriptor trainingDescriptor = mMessageSwitch.getController().getNextTrainingDescriptor();
-        		DnnTrainingData trainingData = mMessageSwitch.getController().getModel().getTrainingData(trainingDescriptor);
-        		mMessageSwitch.setUserOutputMessage(clientName, new DnnTrainingPackageMessage(new DnnTrainingPackage(modelDescriptor, trainingData)));
-        		mMessageSwitch.getController().assignSection(clientName);
-
-//        		mMessageSwitch.getController().assignClient(clientName);
-//        		mMessageSwitch.setUserOutputMessage(clientName, mMessageSwitch.getClientManager().getClientLastOutputMessage(clientName));
-        	}        	
+        		DnnModelMessage message = new DnnModelMessage("",modelDescriptor);
+        		mMessageSwitch.getClientManager().addClient(clientName, message);
+        		mMessageSwitch.setUserOutputMessage(clientName, message);
+        		mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.Initial);
+        	}
         	break;
 		default:
 			break;

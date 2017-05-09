@@ -4,7 +4,6 @@ import dnnUtil.dnnModel.DnnModelParameters;
 import dnnUtil.dnnModel.DnnModel;
 import dnnUtil.dnnModel.DnnTrainingData;
 import dnnUtil.dnnModel.DnnTrainingDescriptor;
-import dnnUtil.dnnModel.DnnTrainingPackage;
 import dnnUtil.dnnStatistics.DnnStatistics;
 
 import java.io.File;
@@ -17,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 import dnnProcessingUnit.ClientDataManager.SectionStatus;
-import dnnUtil.dnnMessage.DnnTrainingPackageMessage;
+import dnnUtil.dnnMessage.DnnTrainingDataMessage;
 import messagesSwitch.MessagesSwitch;
 
 public class DnnController extends Thread{
@@ -48,8 +47,9 @@ public class DnnController extends Thread{
 		mMessageSwitch.setController(this);
 		mClientDataManager.Init();
 		while(mRunning){
-
 			mModelUpdater.rewriteModel(this.mModel);
+			updateOutOfDateClients();
+			assignUnemployed();
 			forwardOutputMessages();
 
 		}
@@ -65,6 +65,13 @@ public class DnnController extends Thread{
 	
 	private void forwardOutputMessages(){
 		mMessageSwitch.updateOutputMessages();
+	}
+	
+	private void assignUnemployed(){
+		String unemployedName = mMessageSwitch.assignClient();
+		if(unemployedName != ""){
+			assignClient(unemployedName);
+		}
 	}
 
 
@@ -101,10 +108,14 @@ public class DnnController extends Thread{
 		this.mModel = mModel;
 	}
 
-	public void assignClient(String clientName){
+	private void assignClient(String clientName){
 		DnnTrainingDescriptor nextPackage = getNextTrainingDescriptor();
 		DnnTrainingData nextData = mModel.getTrainingData(nextPackage);
-		mMessageSwitch.getClientManager().addClient(clientName, new DnnTrainingPackageMessage(new DnnTrainingPackage(mModel.getModelDescriptor(), nextData)) );
+		mMessageSwitch.getClientManager().addClient(clientName, new DnnTrainingDataMessage(nextData));
+		mClientDataManager.assignSection(clientName);
+	}
+	private void updateOutOfDateClients(){
+		mMessageSwitch.updateOutOfDateClients();
 	}
 
 	public void addStatistics(DnnStatistics stats){

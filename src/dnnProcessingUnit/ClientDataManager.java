@@ -1,5 +1,6 @@
 package dnnProcessingUnit;
 
+import java.awt.List;
 import java.util.ArrayList;
 
 public class ClientDataManager {
@@ -64,6 +65,7 @@ public class ClientDataManager {
 		nextSectionIndex++;
 		mTestSectionsADT.get(nextTestSectionIndex).setTrainingClient(clientName);
 		mTestSectionsADT.get(nextTestSectionIndex).setStatus(SectionStatus.SentToTraining);
+		mTestSectionsADT.get(nextSectionIndex).setTimeStamp();
 	}
 	
 	public void updateTestSection(String clientName,SectionStatus status, float successRate) {
@@ -90,12 +92,14 @@ public class ClientDataManager {
 		private  SectionStatus mStatus;
 		private  float mSuccessRate;
 		private  int mSectionIndex;
+		private  long timeStamp;
 		
 		public SectionFriends(int sectionIndex, String trainingClient, SectionStatus status, float successRate){
 			mTrainingClient = trainingClient;
 			mStatus = status;
 			mSuccessRate = successRate;
 			mSectionIndex = sectionIndex;
+			timeStamp = System.currentTimeMillis();
 		}
 		public SectionFriends(int sectionIndex){
 			mTrainingClient = "";
@@ -124,6 +128,12 @@ public class ClientDataManager {
 		}
 		public void setSuccessRate(float successRate){
 			mSuccessRate = successRate;
+		}
+		public long getTimeStamp(){
+			return timeStamp;
+		}
+		public void setTimeStamp(){
+			timeStamp = System.currentTimeMillis();
 		}
 	}
 	

@@ -40,6 +40,31 @@ public class ClientManager {
         }
 	}
 	
+	public void updateClientStatus(String clientName, ClientStatus status){
+		clientList.get(clientName).setStatus(status);
+	}
+	
+	public ArrayList<String> getOutOfDateClient(){
+		ArrayList<String> outOfDateNames =new ArrayList<>();
+		ArrayList<String> clientNames = getClientNames();
+		for (String clientName: clientNames) {
+			if(clientList.get(clientName).getStatus() == ClientStatus.OutOfDate){
+				outOfDateNames.add(clientName);
+			}
+		}
+		return outOfDateNames;
+	}
+	
+	public String getReadyClient(){
+		ArrayList<String> clientNames = getClientNames();
+		for (String clientName: clientNames) {
+			if(clientList.get(clientName).getStatus() == ClientStatus.Ready){
+				return clientName;
+			}
+		}
+		return "";
+	}
+	
 	public DnnMessage getClientLastInputMessage(String ClientName){
 		try{
 			if(!this.clientList.containsKey(ClientName)){

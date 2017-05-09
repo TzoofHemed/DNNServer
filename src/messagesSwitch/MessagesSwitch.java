@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import dnnProcessingUnit.DnnController;
 import dnnUtil.dnnMessage.DnnMessage;
+import dnnUtil.dnnMessage.DnnModelMessage;
+import messagesSwitch.ClientConstants.ClientStatus;
 import tcpConectivity.TCPServer;
 import tcpConectivity.UserManager;
 
@@ -30,7 +32,20 @@ public class MessagesSwitch {
 			}
 		}
 	}
+	
+	public void updateOutOfDateClients(){
+		ArrayList<String> clientNames = mClientManager.getOutOfDateClient();
+		for (String clientName : clientNames) {
+			setUserOutputMessage(clientName, new DnnModelMessage("",mController.getModel().getModelDescriptor()));
+			mClientManager.updateClientStatus(clientName,ClientStatus.Initial);
+		}
+	}
+	
+	public String assignClient(){
+		return mClientManager.getReadyClient();
+	}
 
+	
 	public TCPServer getServer() {
 		return mServer;
 	}

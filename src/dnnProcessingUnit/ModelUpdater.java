@@ -20,20 +20,19 @@ public class ModelUpdater {
 		}
 	}
 	
-	public void mergeWeights(){
-		for (int WDIndex = 0; WDIndex < mWeightsToUpdate.size(); WDIndex++) {
-			DnnWeightsData weightData = mWeightsToUpdate.remove();
-			
-			
-		}
+	public void rewriteModel(DnnModel oldModel){
+		oldModel.setWeightsData(mergeWeights());
 	}
-	
-	public DnnModel rewriteModel(DnnModel oldModel){
-		DnnModel newModel = oldModel;
-		while (!mWeightsToUpdate.isEmpty()) {
-			newModel.setWeightsData(mWeightsToUpdate.remove());
+	private DnnWeightsData mergeWeights(){
+		DnnWeightsData weightData = new DnnWeightsData();
+		float oneOverScaler = 0;
+		for (int WDIndex = 0; WDIndex < mWeightsToUpdate.size(); WDIndex++) { 
+			 weightData.addWeights(mWeightsToUpdate.remove());
+			 oneOverScaler++;
 		}
-		return newModel;
+		if(oneOverScaler > 0){
+			weightData.scaleWeights(1/oneOverScaler);
+		}
+		return weightData;
 	}
-
 }
