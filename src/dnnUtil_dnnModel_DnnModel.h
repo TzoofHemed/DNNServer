@@ -57,6 +57,30 @@ JNIEXPORT jint JNICALL Java_dnnUtil_dnnModel_DnnModel_jniLoadTrainingData
 JNIEXPORT void JNICALL Java_dnnUtil_dnnModel_DnnModel_jniGetTraingData
   (JNIEnv *, jobject, jint, jint);
 
+/*
+ * Class:     dnnUtil_dnnModel_DnnModel
+ * Method:    jniSetTrainingData
+ * Signature: ([F[IIII)V
+ */
+JNIEXPORT void JNICALL Java_dnnUtil_dnnModel_DnnModel_jniSetTrainingData
+  (JNIEnv *, jobject, jfloatArray, jintArray, jint, jint, jint);
+
+/*
+ * Class:     dnnUtil_dnnModel_DnnModel
+ * Method:    jniGetWeightsData
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_dnnUtil_dnnModel_DnnModel_jniGetWeightsData
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     dnnUtil_dnnModel_DnnModel
+ * Method:    jniSetWeightsData
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_dnnUtil_dnnModel_DnnModel_jniSetWeightsData
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif
