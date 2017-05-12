@@ -47,12 +47,18 @@ public class DnnController extends Thread{
 		mMessageSwitch.setController(this);
 		mClientDataManager.Init();
 		while(mRunning){
-			mModelUpdater.rewriteModel(this.mModel);
+			if(mModelUpdater.rewriteModel(this.mModel)){
+				setAllToOutOfDate();
+			}	
 			updateOutOfDateClients();
 			assignUnemployed();
 			forwardOutputMessages();
 
 		}
+	}
+	
+	private void setAllToOutOfDate(){
+		mMessageSwitch.setAlltoOutOfDate();
 	}
 	
 	public void updateSectionStatus(String clientName, SectionStatus status, float successRate){

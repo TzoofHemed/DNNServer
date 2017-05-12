@@ -17,7 +17,6 @@ public class InputHandler {
 
 	
 	public void newMessageInput(String clientName, DnnMessage newMessage){
-		Object messageContent = newMessage.getContent();
         switch(newMessage.getMessageType()){
         case TEST:
         	System.out.println("TEST user: "+ clientName +" is connected TEST\n");
@@ -33,9 +32,10 @@ public class InputHandler {
     		mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.Busy);
         	break;
         case WEIGHTS:
+        	DnnWeightsData messageContent = (DnnWeightsData)newMessage.getContent();
         	//TODO update statistics, update clientDataManager
-        		mMessageSwitch.getController().getModelUpdater().weightChecker((DnnWeightsData)messageContent);
-        		mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.OutOfDate);
+        	mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.Ready);
+        	mMessageSwitch.getController().getModelUpdater().weightChecker(messageContent);	
         	break;
         case STRING:
         	break;

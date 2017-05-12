@@ -7,9 +7,11 @@ import dnnUtil.dnnModel.*;
 public class ModelUpdater {
 
 	private LinkedBlockingQueue<DnnWeightsData> mWeightsToUpdate;
-
+	private int numOfRequeiredWeights;
+	
 	public ModelUpdater(){
 		mWeightsToUpdate = new LinkedBlockingQueue<>();
+		numOfRequeiredWeights = 10;		//TODO change to something relative to size of batch/ epoch
 	}	
 	/*
 	 * also adds the given delta to the toUpdate queue
@@ -20,9 +22,14 @@ public class ModelUpdater {
 		}
 	}
 	
-	public void rewriteModel(DnnModel oldModel){
-		oldModel.setWeightsData(mergeWeights());
+	public boolean rewriteModel(DnnModel oldModel){
+		if(mWeightsToUpdate.size() >= numOfRequeiredWeights){
+			oldModel.setWeightsData(mergeWeights());
+			return true;
+		}
+		return false;
 	}
+	
 	private DnnWeightsData mergeWeights(){
 		DnnWeightsData weightData = new DnnWeightsData();
 		float oneOverScaler = 0;

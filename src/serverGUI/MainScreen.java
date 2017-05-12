@@ -197,6 +197,12 @@ public class MainScreen extends JFrame{
 			public void messageReceived(DnnMessage message) { 
 				mainLog.append("\nmessage type: " + message.getMessageType() + " from: "+ message.getSenderName() + " Content: " + message.getContent().toString()); 
 			}
+			
+		}, new TCPServer.OnMessageSent() {
+			@Override
+			public void messageSent(String userName, DnnMessage message) { 
+				mainLog.append("\nmessage type: " + message.getMessageType() + " to: "+ userName + " Content: " + message.getContent().toString()); 
+			}
 		});
 		mServer.start();
 

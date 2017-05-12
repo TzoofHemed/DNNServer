@@ -78,6 +78,7 @@ public class UserManager extends Thread {
                     DnnMessage fromServer = getUserOutputMessage();
                     if(fromServer != null){
                     	sendMessage(fromServer);
+                    	managerDelegate.messageSent(user.getUsername(), fromServer);
                     }
 	                
 //	                mInputHandler.newMessageInput(socket.getInetAddress().getHostName(),(DnnMessage)messageObject);
@@ -107,7 +108,7 @@ public class UserManager extends Thread {
             e.printStackTrace();
         }
 
-        System.out.println("S: User " + user.getUsername() + " leaved the room.");
+        System.out.println("S: User " + user.getUsername() + " left the room.");
         socket = null;
 
         //todo close all user connections
@@ -124,6 +125,7 @@ public class UserManager extends Thread {
         	try {
         		System.out.println("message sent\n");
 				bufferSender.writeObject(message);
+				
 			} catch (IOException e) {
 				System.out.println(e.toString());
 				e.printStackTrace();
@@ -166,6 +168,8 @@ public class UserManager extends Thread {
          * @param toUser   the user that should receive the message
          */
         public void messageReceived(User fromUser);
+
+		public void messageSent(String userName, DnnMessage message);
 
     }
 

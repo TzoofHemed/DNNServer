@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 import dnnProcessingUnit.DnnController;
 import dnnUtil.dnnMessage.DnnMessage;
-import dnnUtil.dnnMessage.DnnModelMessage;
+import dnnUtil.dnnMessage.DnnWeightsMessage;
+import dnnUtil.dnnModel.DnnWeightsData;
 import messagesSwitch.ClientConstants.ClientStatus;
 import tcpConectivity.TCPServer;
 import tcpConectivity.UserManager;
@@ -24,6 +25,13 @@ public class MessagesSwitch {
 	public ClientManager getClientManager(){
 		return mClientManager;
 	}
+	
+	public void setAlltoOutOfDate(){
+		ArrayList<String> clientNames = mClientManager.getClientNames();
+		for (String clientName : clientNames) {
+			mClientManager.updateClientStatus(clientName,ClientStatus.OutOfDate);
+		}
+	}
 
 	public void setUserOutputMessage(String userName, DnnMessage message){
 		for(UserManager userManager : getServer().getConnectedUserManagers()){
@@ -35,8 +43,9 @@ public class MessagesSwitch {
 	
 	public void updateOutOfDateClients(){
 		ArrayList<String> clientNames = mClientManager.getOutOfDateClient();
+		DnnWeightsData messageContent = mController.getModel().getWeightsData();
 		for (String clientName : clientNames) {
-			setUserOutputMessage(clientName, new DnnModelMessage("",mController.getModel().getModelDescriptor()));
+			setUserOutputMessage(clientName, new DnnWeightsMessage("",messageContent));
 			mClientManager.updateClientStatus(clientName,ClientStatus.Initial);
 		}
 	}

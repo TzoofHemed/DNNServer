@@ -23,14 +23,17 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
     private ServerSocket serverSocket;
     private ArrayList<UserManager> connectedUsers;
     private MessagesSwitch mMessagesSwitch;
+    private OnMessageSent messageSentListner;  
 
     /**
      * Constructor of the class
      *
      * @param onMessageReceived listens for the messages
      */
-    public TCPServer(TCPServer.OnMessageReceived onMessageReceived) {
+    public TCPServer(TCPServer.OnMessageReceived onMessageReceived,TCPServer.OnMessageSent onMessageSent) {
         this.messageListener = onMessageReceived;
+        this.messageSentListner = onMessageSent;
+
         connectedUsers = new ArrayList<UserManager>();
         mMessagesSwitch = new MessagesSwitch(this);
     }
@@ -168,14 +171,22 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
 //    	System.out.println(fromUser.getUsername()+ ":  " + fromUser.getMessage().getContent());
 //        messageListener.messageReceived("User " + fromUser.getUsername() + " says: " + fromUser.getMessage() + " to user: " + (toUser == null ? "ALL" : toUser.getUsername()));
         // send the message to the other clients
-    	
 
+    }
+    
+    @Override
+    public void messageSent(String userName, DnnMessage message){
+    	messageSentListner.messageSent(userName, message);
     }
 
     //Declare the interface. The method messageReceived(String message) will/must be implemented in the ServerBoard
     //class at on startServer button click
     public interface OnMessageReceived {
         public void messageReceived(DnnMessage message);
+        
+    }
+    public interface OnMessageSent{
+    	public void messageSent(String userName, DnnMessage message);
     }
 
 }
