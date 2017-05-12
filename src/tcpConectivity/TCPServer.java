@@ -17,13 +17,16 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
 
     public static final int SERVERPORT = 2828;
     // while this is true the server will run
-    private boolean running = false;
+    private boolean mRun = false;
     // callback used to notify new messages received
     private OnMessageReceived messageListener;
     private ServerSocket serverSocket;
     private ArrayList<UserManager> connectedUsers;
     private MessagesSwitch mMessagesSwitch;
     private OnMessageSent messageSentListner;  
+    
+    
+
 
     /**
      * Constructor of the class
@@ -71,7 +74,7 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
      */
     public void close() {
 
-        running = false;
+        mRun = false;
 
         try {
             serverSocket.close();
@@ -99,20 +102,24 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
         	}
         }
     }
+    
+    
+
 
     /**
      * Builds a new server connection
      */
     private void runServer() {
-        running = true;
-
+        mRun = true;
+        
+        
         try {
             //create a server socket. A server socket waits for requests to come in over the network.
             serverSocket = new ServerSocket(SERVERPORT);
 
-            while (running) {
+            while (mRun) {
                 // create a loop and get all the incoming connections and create users with them
-
+            	
                 System.out.println("S: Waiting for a client ...");
 
                 //create client socket... the method accept() listens for a connection to be made to this socket and accepts it.
@@ -127,7 +134,7 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
 
                 System.out.println("S: New client connected ...");
                 
-                sendMessage();
+//                sendMessage();
             }
 
         } catch (Exception e) {
@@ -167,7 +174,7 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
     public void messageReceived(User fromUser) {
     	DnnMessage message = fromUser.getMessage();
     	messageListener.messageReceived(message);
-    	mMessagesSwitch.getClientManager().addMessageToClient(fromUser.getUsername(),message);
+    	mMessagesSwitch.getClientManager().addInputMessageToClient(fromUser.getUsername(),message);
 //    	System.out.println(fromUser.getUsername()+ ":  " + fromUser.getMessage().getContent());
 //        messageListener.messageReceived("User " + fromUser.getUsername() + " says: " + fromUser.getMessage() + " to user: " + (toUser == null ? "ALL" : toUser.getUsername()));
         // send the message to the other clients

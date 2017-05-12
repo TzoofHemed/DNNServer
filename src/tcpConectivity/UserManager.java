@@ -20,7 +20,7 @@ public class UserManager extends Thread {
     private Socket socket;
     private ObjectOutputStream bufferSender;
     // flag used to stop the read operation
-    private boolean running;
+    private boolean mRun;
     // used to notify certain user actions like receiving a message or disconnect
     
     private UserManagerDelegate managerDelegate;
@@ -28,11 +28,34 @@ public class UserManager extends Thread {
     public UserManager(Socket socket, UserManagerDelegate managerDelegate ) {
         this.user = new User();
         this.socket = socket;
-        running = true;
+        mRun = true;
         this.managerDelegate =  managerDelegate;
       
     }
 
+    private final Thread mOutputListener = new Thread() {
+        /** this Runnable is for writing DnnMessage objects to the output stream
+         * it waits for output messages on the output queue and sends them
+         */
+    	
+        @Override
+        public void run() {
+            while(mRun == true){
+                try {
+                    DnnMessage fromServer = getUserOutputMessage();
+                    if(fromServer != null){
+                    	sendMessage(fromServer);
+                    	managerDelegate.messageSent(user.getUsername(), fromServer);
+                    }
+                	
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    };
+    
     public User getUser() {
         return user;
     }
@@ -51,10 +74,10 @@ public class UserManager extends Thread {
 
             //sends the message to the client
             bufferSender = new ObjectOutputStream(socket.getOutputStream());
-
+            mOutputListener.start();
             //read the message received from client
             ObjectInputStream oInputStream = new ObjectInputStream(socket.getInputStream());
-            while (running) {
+            while (mRun) {
 
 	            	Object messageObject = null;
 	                try {
@@ -75,11 +98,7 @@ public class UserManager extends Thread {
                         // notify message received action
                         managerDelegate.messageReceived(user);
                     }
-                    DnnMessage fromServer = getUserOutputMessage();
-                    if(fromServer != null){
-                    	sendMessage(fromServer);
-                    	managerDelegate.messageSent(user.getUsername(), fromServer);
-                    }
+
 	                
 //	                mInputHandler.newMessageInput(socket.getInetAddress().getHostName(),(DnnMessage)messageObject);
 	                
@@ -96,7 +115,7 @@ public class UserManager extends Thread {
      */
     public void close() {
 
-        running = false;
+        mRun = false;
 
         if (bufferSender != null) {
             bufferSender = null;

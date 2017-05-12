@@ -195,13 +195,13 @@ public class MainScreen extends JFrame{
 			//this method is actually a callback method, because it will run every time when it will be called from
 			//TCPServer class (at while)
 			public void messageReceived(DnnMessage message) { 
-				mainLog.append("\nmessage type: " + message.getMessageType() + " from: "+ message.getSenderName() + " Content: " + message.getContent().toString()); 
+				mainLog.append("\nmessage type: " + message.getMessageType() + " from: "+ message.getSenderName()); 
 			}
 			
 		}, new TCPServer.OnMessageSent() {
 			@Override
 			public void messageSent(String userName, DnnMessage message) { 
-				mainLog.append("\nmessage type: " + message.getMessageType() + " to: "+ userName + " Content: " + message.getContent().toString()); 
+				mainLog.append("\nmessage type: " + message.getMessageType() + " to: "+ userName); 
 			}
 		});
 		mServer.start();

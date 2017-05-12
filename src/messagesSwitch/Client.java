@@ -21,7 +21,7 @@ public class Client {
     	this.Clientname = Clientname;
         mInputHandler = inputHandler;
         mInputHandler.newMessageInput(this.Clientname, message);
-        setStatus(ClientStatus.Busy);
+        setStatus(ClientStatus.Initial);
     }
 
     public InputHandler getInputHandler(){

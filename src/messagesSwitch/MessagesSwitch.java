@@ -43,7 +43,7 @@ public class MessagesSwitch {
 	
 	public void updateOutOfDateClients(){
 		ArrayList<String> clientNames = mClientManager.getOutOfDateClient();
-		DnnWeightsData messageContent = mController.getModel().getWeightsData();
+		DnnWeightsData messageContent = mController.getDnnWeightsData();
 		for (String clientName : clientNames) {
 			setUserOutputMessage(clientName, new DnnWeightsMessage("",messageContent));
 			mClientManager.updateClientStatus(clientName,ClientStatus.Initial);

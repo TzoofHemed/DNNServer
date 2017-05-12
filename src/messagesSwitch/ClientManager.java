@@ -59,6 +59,7 @@ public class ClientManager {
 		ArrayList<String> clientNames = getClientNames();
 		for (String clientName: clientNames) {
 			if(clientList.get(clientName).getStatus() == ClientStatus.Ready){
+				changeClientStatus(clientName, ClientStatus.Busy);
 				return clientName;
 			}
 		}
@@ -91,11 +92,19 @@ public class ClientManager {
         }		
 	}
 	
-	public void addMessageToClient(String clientName, DnnMessage message){
+	public void addInputMessageToClient(String clientName, DnnMessage message){
 		if(!this.clientList.containsKey(clientName)){
 			addClient(clientName, message);
 		}else{
 			this.clientList.get(clientName).addInputMessage(message);
+		}
+	}
+	
+	public void addMessageToClient(String clientName, DnnMessage message){
+		if(!this.clientList.containsKey(clientName)){
+			addClient(clientName, message);
+		}else{
+			this.clientList.get(clientName).addOutputMessage(message);
 		}
 	}
 

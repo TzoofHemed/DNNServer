@@ -8,8 +8,8 @@ public class ClientDataManager {
 		mSectionsADT = new ArrayList<>();
 		mTestSectionsADT = new ArrayList<>();
 		mDnnController = dnnController;
-		nextSectionIndex = -1;
-		nextTestSectionIndex = -1;
+		nextSectionIndex = 0;
+		nextTestSectionIndex = 0;
 	}
 	private DnnController mDnnController;
 	private ArrayList<SectionFriends> mSectionsADT;
@@ -34,9 +34,10 @@ public class ClientDataManager {
 		}
 	}
 	public void assignSection(String clientName){
-		nextSectionIndex++;
+		
 		mSectionsADT.get(nextSectionIndex).setTrainingClient(clientName);
 		mSectionsADT.get(nextSectionIndex).setStatus(SectionStatus.SentToTraining);
+		nextSectionIndex++;
 	}
 	
 	public void updateSection(String clientName,SectionStatus status, float successRate) {
@@ -61,10 +62,11 @@ public class ClientDataManager {
 		}
 	}
 	public void assignTestSection(String clientName){
-		nextSectionIndex++;
+		
 		mTestSectionsADT.get(nextTestSectionIndex).setTrainingClient(clientName);
 		mTestSectionsADT.get(nextTestSectionIndex).setStatus(SectionStatus.SentToTraining);
-		mTestSectionsADT.get(nextSectionIndex).setTimeStamp();
+		mTestSectionsADT.get(nextTestSectionIndex).setTimeStamp();
+		nextTestSectionIndex++;
 	}
 	
 	public void updateTestSection(String clientName,SectionStatus status, float successRate) {
@@ -81,9 +83,6 @@ public class ClientDataManager {
 		}
 
 	}
-	
-	
-	
 	
 	
 	public class SectionFriends{

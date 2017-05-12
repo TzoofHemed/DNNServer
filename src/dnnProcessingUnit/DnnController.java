@@ -4,6 +4,7 @@ import dnnUtil.dnnModel.DnnModelParameters;
 import dnnUtil.dnnModel.DnnModel;
 import dnnUtil.dnnModel.DnnTrainingData;
 import dnnUtil.dnnModel.DnnTrainingDescriptor;
+import dnnUtil.dnnModel.DnnWeightsData;
 import dnnUtil.dnnStatistics.DnnStatistics;
 
 import java.io.File;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import dnnProcessingUnit.ClientDataManager.SectionStatus;
 import dnnUtil.dnnMessage.DnnTrainingDataMessage;
+import messagesSwitch.ClientConstants.ClientStatus;
 import messagesSwitch.MessagesSwitch;
 
 public class DnnController extends Thread{
@@ -31,16 +33,17 @@ public class DnnController extends Thread{
 	private int mNextEndingSection;
 	private ClientDataManager mClientDataManager;
 	private int mSectionLength;
+	private DnnWeightsData mDnnWeightsData;
 
 	public DnnController(MessagesSwitch messageSwitch){
 		setModel(new DnnModel(mModelParameters));
 		mMessageSwitch = messageSwitch;
 		mControllerStatistics = new ArrayList<>();
-		setModelUpdater(new ModelUpdater());
+		setModelUpdater(new ModelUpdater(this));
 		mNextBeginningSection = 0;
-		mNextEndingSection = 100; 
+		mNextEndingSection = 1000; 
 		mClientDataManager = new ClientDataManager(this);
-		mSectionLength = 100;
+		mSectionLength = 1000;
 	}
 
 	public void runDnnController(){
@@ -55,6 +58,12 @@ public class DnnController extends Thread{
 			forwardOutputMessages();
 
 		}
+	}
+	public void setDnnWeightsData(DnnWeightsData dnnWeightsData){
+		mDnnWeightsData = dnnWeightsData;
+	}
+	public DnnWeightsData getDnnWeightsData(){
+		return mDnnWeightsData;
 	}
 	
 	private void setAllToOutOfDate(){
@@ -117,7 +126,7 @@ public class DnnController extends Thread{
 	private void assignClient(String clientName){
 		DnnTrainingDescriptor nextPackage = getNextTrainingDescriptor();
 		DnnTrainingData nextData = mModel.getTrainingData(nextPackage);
-		mMessageSwitch.getClientManager().addClient(clientName, new DnnTrainingDataMessage(nextData));
+		mMessageSwitch.getClientManager().addMessageToClient(clientName, new DnnTrainingDataMessage(nextData));
 		mClientDataManager.assignSection(clientName);
 	}
 	private void updateOutOfDateClients(){
@@ -138,7 +147,7 @@ public class DnnController extends Thread{
 
 	public DnnTrainingDescriptor getNextTrainingDescriptor(){
 		DnnTrainingDescriptor descriptor = new DnnTrainingDescriptor(mNextBeginningSection,mNextEndingSection);
-		if(mNextEndingSection <= mModel.getNumberOfTrainingObjects()){
+		if(mNextEndingSection < mModel.getNumberOfTrainingObjects()){
 			mNextBeginningSection += 100;
 			mNextEndingSection += 100;
 		}
