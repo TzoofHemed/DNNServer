@@ -20,7 +20,9 @@ public class UserManager extends Thread {
     private User user;
     // the socket that links the user(client) to this server
     private Socket socket;
+
     private BufferedOutputStream buf;
+
     private ObjectOutputStream bufferSender;
     // flag used to stop the read operation
     private boolean mRun;
@@ -150,8 +152,10 @@ public class UserManager extends Thread {
         	try {
         		System.out.println("message sent\n");
 				bufferSender.writeObject(message);
-				bufferSender.reset();
+
 				bufferSender.flush();
+				bufferSender.reset();
+
 				
 			} catch (IOException e) {
 				System.out.println(e.toString());
