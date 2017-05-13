@@ -1,5 +1,7 @@
 package tcpConectivity;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -18,6 +20,7 @@ public class UserManager extends Thread {
     private User user;
     // the socket that links the user(client) to this server
     private Socket socket;
+    private BufferedOutputStream buf;
     private ObjectOutputStream bufferSender;
     // flag used to stop the read operation
     private boolean mRun;
@@ -73,10 +76,13 @@ public class UserManager extends Thread {
         try {
 
             //sends the message to the client
-            bufferSender = new ObjectOutputStream(socket.getOutputStream());
+        	buf = new BufferedOutputStream(socket.getOutputStream());
+            bufferSender = new ObjectOutputStream(buf);
+            bufferSender.flush();
             mOutputListener.start();
             //read the message received from client
-            ObjectInputStream oInputStream = new ObjectInputStream(socket.getInputStream());
+            ObjectInputStream oInputStream = new ObjectInputStream(
+            		new BufferedInputStream(socket.getInputStream()));
             while (mRun) {
 
 	            	Object messageObject = null;
@@ -117,12 +123,12 @@ public class UserManager extends Thread {
 
         mRun = false;
 
-        if (bufferSender != null) {
-            bufferSender = null;
-        }
+        
 
         try {
-            socket.close();
+        	if (bufferSender != null) bufferSender.close();
+        	if (buf != null) buf.close();
+            if (socket != null) socket.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -144,6 +150,8 @@ public class UserManager extends Thread {
         	try {
         		System.out.println("message sent\n");
 				bufferSender.writeObject(message);
+				bufferSender.reset();
+				bufferSender.flush();
 				
 			} catch (IOException e) {
 				System.out.println(e.toString());
