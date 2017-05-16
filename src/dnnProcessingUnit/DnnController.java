@@ -18,7 +18,6 @@ import java.util.List;
 
 import dnnProcessingUnit.ClientDataManager.SectionStatus;
 import dnnUtil.dnnMessage.DnnTrainingDataMessage;
-import messagesSwitch.ClientConstants.ClientStatus;
 import messagesSwitch.MessagesSwitch;
 
 public class DnnController extends Thread{
@@ -34,6 +33,7 @@ public class DnnController extends Thread{
 	private ClientDataManager mClientDataManager;
 	private int mSectionLength;
 	private DnnWeightsData mDnnWeightsData;
+	private int mModelVersion;
 
 	public DnnController(MessagesSwitch messageSwitch){
 		setModel(new DnnModel(mModelParameters));
@@ -44,21 +44,26 @@ public class DnnController extends Thread{
 		mNextEndingSection = 1000; 
 		mClientDataManager = new ClientDataManager(this);
 		mSectionLength = 1000;
+		mModelVersion =0;
 	}
 
 	public void runDnnController(){
 		mMessageSwitch.setController(this);
 		mClientDataManager.Init();
-		while(mRunning){
-			if(mModelUpdater.rewriteModel(this.mModel)){
-				setAllToOutOfDate();
-			}	
-			updateOutOfDateClients();
-			assignUnemployed();
-			forwardOutputMessages();
-
-		}
+//		while(mRunning){
+//			
+//			
+////			assignUnemployed();
+////			forwardOutputMessages();
+//
+//		}
 	}
+	public void updateModel(){
+		mModelUpdater.rewriteModel(this.mModel);
+		setAllToOutOfDate();
+		updateOutOfDateClients();
+		forwardOutputMessages();
+	}	
 	public void setDnnWeightsData(DnnWeightsData dnnWeightsData){
 		mDnnWeightsData = dnnWeightsData;
 	}
@@ -98,6 +103,7 @@ public class DnnController extends Thread{
 		runDnnController();
 
 	}
+
 
 	public void stopController(){
 		mRunning =false;
@@ -205,5 +211,13 @@ public class DnnController extends Thread{
 	
 	public String getTrainerCount(){
 		return mMessageSwitch.getClientCount();		
+	}
+
+	public int getModelVersion() {
+		return mModelVersion;
+	}
+
+	public void stepModelVersion() {
+		this.mModelVersion++;
 	}
 }

@@ -96,17 +96,17 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
      * 
      * @param user a user object containing the message to be sent and also its username
      */
-    public void sendMessage() {
-
-        if (connectedUsers != null) {
-        	for(UserManager userManager : connectedUsers ){
-        		DnnMessage message = userManager.getUserOutputMessage();
-        		if(message != null){
-        			userManager.sendMessage(message);
-        		}
-        	}
-        }
-    }
+//    public void sendMessage() {
+//
+//        if (connectedUsers != null) {
+//        	for(UserManager userManager : connectedUsers ){
+//        		DnnMessage message = userManager.getUserOutputMessage();
+//        		if(message != null){
+//        			userManager.sendMessage(message);
+//        		}
+//        	}
+//        }
+//    }
     
     
 
@@ -177,7 +177,13 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
 
     @Override
     public void messageReceived(User fromUser) {
-    	DnnMessage message = fromUser.getMessage();
+    	DnnMessage message = null;
+		try {
+			message = fromUser.getMessage();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	messageListener.messageReceived(message);
     	mMessagesSwitch.getClientManager().addInputMessageToClient(fromUser.getUsername(),message);
 //    	System.out.println(fromUser.getUsername()+ ":  " + fromUser.getMessage().getContent());

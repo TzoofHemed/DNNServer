@@ -1,6 +1,5 @@
 package dnnProcessingUnit;
 
-import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import dnnUtil.dnnModel.*;
@@ -10,7 +9,7 @@ public class ModelUpdater {
 	private LinkedBlockingQueue<DnnWeightsData> mWeightsToUpdate;
 	private int numOfRequeiredWeights;
 	private DnnController mDnnController; 
-	
+
 	public ModelUpdater(DnnController dnnCotroller){
 		mWeightsToUpdate = new LinkedBlockingQueue<>();
 		numOfRequeiredWeights = 10;		//TODO change to something relative to size of batch/ epoch
@@ -23,26 +22,27 @@ public class ModelUpdater {
 		if(true){		//TODO add better rule for delta checking...
 			mWeightsToUpdate.add(weight);
 		}
-	}
-	
-	public boolean rewriteModel(DnnModel oldModel){
 		if(mWeightsToUpdate.size() >= numOfRequeiredWeights){
-			
-			DnnWeightsData updatedWeights= mergeWeights();
-			mDnnController.setDnnWeightsData(updatedWeights);
-			oldModel.setWeightsData(updatedWeights);
-			
-			return true;
+			mDnnController.updateModel();
 		}
-		return false;
 	}
-	
+
+	public boolean rewriteModel(DnnModel oldModel){
+
+		DnnWeightsData updatedWeights= mergeWeights();
+		mDnnController.setDnnWeightsData(updatedWeights);
+		oldModel.setWeightsData(updatedWeights);
+		mDnnController.stepModelVersion();
+		return true;
+
+	}
+
 	private DnnWeightsData mergeWeights(){
 		DnnWeightsData weightData = new DnnWeightsData();
 		float oneOverScaler = 0;
 		for (int WDIndex = 0; WDIndex < mWeightsToUpdate.size(); WDIndex++) { 
-			 weightData.addWeights(mWeightsToUpdate.remove());
-			 oneOverScaler++;
+			weightData.addWeights(mWeightsToUpdate.remove());
+			oneOverScaler++;
 		}
 		if(oneOverScaler > 0){
 			weightData.scaleWeights(1/oneOverScaler);

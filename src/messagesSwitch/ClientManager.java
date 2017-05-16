@@ -79,7 +79,7 @@ public class ClientManager {
         }		
 	}
 	
-	public DnnMessage getClientLastOutputMessage(String ClientName){
+	public DnnMessage getClientLastOutputMessage(String ClientName) throws Exception{
 		try{
 			if(!this.clientList.containsKey(ClientName)){
 				return null;
@@ -120,4 +120,11 @@ public class ClientManager {
 	public void changeClientStatus(String clientName, ClientStatus status){
 		this.clientList.get(clientName).setStatus(status);
 	}
+	public int getClientModelVersion(String clientName){
+		return clientList.get(clientName).getModelVersion();
+	}
+	public void setClientModelVersion(String clientName,int modelVer){
+		clientList.get(clientName).setModelVersion(modelVer);
+	}
+	
 }

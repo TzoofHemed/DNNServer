@@ -47,7 +47,7 @@ public class UserManager extends Thread {
         public void run() {
             while(mRun == true){
                 try {
-                    DnnMessage fromServer = getUserOutputMessage();
+                    DnnMessage fromServer = getUser().getUserToSendMessage();
                     if(fromServer != null){
                     	sendMessage(fromServer);
                     	managerDelegate.messageSent(user.getUsername(), fromServer);
@@ -165,9 +165,6 @@ public class UserManager extends Thread {
         }
     }
     
-    public DnnMessage getUserOutputMessage(){
-    	return this.getUser().getUserToSendMessage();
-    }
 
     public void setUserOutputMessage(DnnMessage message){
     	this.getUser().setUserToSendMessage(message);

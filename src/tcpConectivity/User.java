@@ -44,16 +44,16 @@ public class User {
         this.username = username;
     }
 
-    public DnnMessage getMessage() {
-    		return userInputMessages.poll();
+    public DnnMessage getMessage() throws InterruptedException {
+    		return userInputMessages.take();
     }
 
     public void setMessage(DnnMessage message) {
     	userInputMessages.add(message);
     }
 
-    public DnnMessage getUserToSendMessage() {
-    		return userOutputMessages.poll();
+    public DnnMessage getUserToSendMessage() throws InterruptedException {
+    		return userOutputMessages.take();
     }
 
     public void setUserToSendMessage(DnnMessage userToSendMessage) {

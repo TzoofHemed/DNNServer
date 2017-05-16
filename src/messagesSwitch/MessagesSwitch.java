@@ -47,6 +47,7 @@ public class MessagesSwitch {
 		for (String clientName : clientNames) {
 			setUserOutputMessage(clientName, new DnnWeightsMessage("",messageContent));
 			mClientManager.updateClientStatus(clientName,ClientStatus.Initial);
+			mClientManager.setClientModelVersion(clientName, getController().getModelVersion());
 		}
 	}
 	
@@ -69,9 +70,14 @@ public class MessagesSwitch {
 
 	public void updateOutputMessages(){
 		ArrayList<String> clientNames = getClientManager().getClientNames();
-		DnnMessage outputMessage;
+		DnnMessage outputMessage = null;
 		for(String clientName : clientNames){
-			outputMessage = getClientManager().getClientLastOutputMessage(clientName);
+			try {
+				outputMessage = getClientManager().getClientLastOutputMessage(clientName);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			if(outputMessage != null){
 				setUserOutputMessage(clientName,outputMessage);
 			}

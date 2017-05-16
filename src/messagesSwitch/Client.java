@@ -14,6 +14,7 @@ public class Client {
     private final BlockingQueue<DnnMessage> clientOutputMessages;
     private InputHandler mInputHandler;
     private ClientStatus mStatus;
+    private int mModelVersion;
     
     public Client(String Clientname, DnnMessage message, InputHandler inputHandler) {
         this.clientInputMessages = new LinkedBlockingQueue<>();
@@ -48,8 +49,8 @@ public class Client {
 		return this.clientInputMessages.remove();
 	}
 	
-	public DnnMessage getLastOutputMessage(){
-		return this.clientOutputMessages.poll();
+	public DnnMessage getLastOutputMessage() throws InterruptedException{
+		return this.clientOutputMessages.take();
 	}
 	
 	public void addInputMessage(DnnMessage message){
@@ -68,6 +69,14 @@ public class Client {
 
 	public void setStatus(ClientStatus mStatus) {
 		this.mStatus = mStatus;
+	}
+
+	public int getModelVersion() {
+		return mModelVersion;
+	}
+
+	public void setModelVersion(int mModelVersion) {
+		this.mModelVersion = mModelVersion;
 	}
 	
 }
