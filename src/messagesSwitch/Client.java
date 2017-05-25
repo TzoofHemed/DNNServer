@@ -54,7 +54,7 @@ public class Client {
 	}
 	
 	public void addInputMessage(DnnMessage message){
-			this.clientInputMessages.add(message);
+//			this.clientInputMessages.add(message);
 			this.mInputHandler.newMessageInput(this.Clientname, message);
 	}
 	

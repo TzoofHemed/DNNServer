@@ -2,7 +2,20 @@ package dnnProcessingUnit;
 
 import java.util.ArrayList;
 
+import dnnUtil.dnnTimer.DnnTimer;
+
 public class ClientDataManager {
+	
+	private DnnController mDnnController;
+	private ArrayList<SectionFriends> mSectionsADT;
+	private int nextSectionIndex;
+	private ArrayList<SectionFriends> mTestSectionsADT;
+	private int nextTestSectionIndex;
+	private DnnTimer mTimer;
+	
+	public static enum SectionStatus{
+		SentToTraining, Trained, NotSent
+	}
 	
 	public ClientDataManager(DnnController dnnController){
 		mSectionsADT = new ArrayList<>();
@@ -11,15 +24,7 @@ public class ClientDataManager {
 		nextSectionIndex = 0;
 		nextTestSectionIndex = 0;
 	}
-	private DnnController mDnnController;
-	private ArrayList<SectionFriends> mSectionsADT;
-	private int nextSectionIndex;
-	private ArrayList<SectionFriends> mTestSectionsADT;
-	private int nextTestSectionIndex;
 	
-	public static enum SectionStatus{
-		SentToTraining, Trained, NotSent
-	}
 	
 	public void Init(){
 		InitiateSectionADT();

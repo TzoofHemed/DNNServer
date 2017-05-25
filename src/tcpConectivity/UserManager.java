@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-
 import dnnUtil.dnnMessage.DnnMessage;
 
 
@@ -53,7 +52,7 @@ public class UserManager extends Thread {
                     	managerDelegate.messageSent(user.getUsername(), fromServer);
                     }
                 	
-                } catch (Exception e) {
+                }catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -93,6 +92,7 @@ public class UserManager extends Thread {
 	                } catch (IOException e) {
 	                	if(e.getMessage() != null){
 	                		System.out.println("Error reading message: " + e.getMessage());
+	                		mRun =false;
 	                	}
 	                }
 	
@@ -115,6 +115,13 @@ public class UserManager extends Thread {
         } catch (Exception e) {
             System.out.println("ServerError: " + e.getMessage());
             e.printStackTrace();
+            try {
+            	mRun =false;
+				socket.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
         }
     }
         
@@ -135,7 +142,7 @@ public class UserManager extends Thread {
             e.printStackTrace();
         }
 
-        System.out.println("S: User " + user.getUsername() + " left the room.");
+        System.out.println("S: User " + user.getUsername() + " is dead to me\n");
         socket = null;
 
         //todo close all user connections
@@ -152,10 +159,8 @@ public class UserManager extends Thread {
         	try {
         		System.out.println("message sent\n");
 				bufferSender.writeObject(message);
-
-				bufferSender.flush();
 				bufferSender.reset();
-
+				bufferSender.flush();
 				
 			} catch (IOException e) {
 				System.out.println(e.toString());

@@ -26,19 +26,35 @@ public class InputHandler {
 			//            managerDelegate.messageReceived(user, null);
 			break;
 		}case READY:{
-			DnnTrainingDescriptor trainingDescriptor = mMessageSwitch.getController().getNextTrainingDescriptor();
-			DnnTrainingData trainingData = mMessageSwitch.getController().getModel().getTrainingData(trainingDescriptor);
+			DnnTrainingData trainingData = null;
+			try {
+				trainingData = mMessageSwitch.getController().getNextTrainingData();
+				mMessageSwitch.getController().trainingDataQueueFiller();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+//			DnnTrainingDescriptor trainingDescriptor = mMessageSwitch.getController().getNextTrainingDescriptor();
+//			DnnTrainingData trainingData = mMessageSwitch.getController().getModel().getTrainingData(trainingDescriptor);
 			mMessageSwitch.setUserOutputMessage(clientName, new DnnTrainingDataMessage(trainingData)); 
 			mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.Busy);
+			
 			break;
 		}case WEIGHTS:{
 			DnnWeightsData messageContent = (DnnWeightsData)newMessage.getContent();
+			
 			//TODO update statistics, update clientDataManager
 			mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.Ready);
 			mMessageSwitch.getController().getModelUpdater().weightChecker(messageContent);	
 			if(mMessageSwitch.getController().getModelVersion() == mMessageSwitch.getClientManager().getClientModelVersion(clientName)){
-				DnnTrainingDescriptor trainingDescriptor = mMessageSwitch.getController().getNextTrainingDescriptor();
-				DnnTrainingData trainingData = mMessageSwitch.getController().getModel().getTrainingData(trainingDescriptor);
+				DnnTrainingData trainingData = null;
+				try {
+					trainingData = mMessageSwitch.getController().getNextTrainingData();
+					mMessageSwitch.getController().trainingDataQueueFiller();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+//				DnnTrainingDescriptor trainingDescriptor = mMessageSwitch.getController().getNextTrainingDescriptor();
+//				DnnTrainingData trainingData = mMessageSwitch.getController().getModel().getTrainingData(trainingDescriptor);
 				mMessageSwitch.setUserOutputMessage(clientName, new DnnTrainingDataMessage(trainingData)); 
 				mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.Busy);
 			}

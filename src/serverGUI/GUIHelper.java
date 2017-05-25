@@ -30,21 +30,21 @@ public class GUIHelper {
 		mGUI.getMainLog().append("\n>>"+ String.join(Constants.delimiter, cmd)+ "\n");
 		switch (cmd[0]){
 		case Constants.printStatistics:
-			mGUI.getMainLog().append(mGUI.getController().getTrainingStatistics()+ "\n");
+			mGUI.getMainLog().append("\n"+mGUI.getController().getTrainingStatistics()+ "\n");
 			break;
 		case Constants.printTrainerStatistics:
-			mGUI.getMainLog().append(mGUI.getController().getTrainerStatistics(cmd[1]) + "\n");
+			mGUI.getMainLog().append("\n"+mGUI.getController().getTrainerStatistics(cmd[1]) + "\n");
 			break;
 		case Constants.saveStatistics:
 			mGUI.getController().saveStatisticsToFile();
-			mGUI.getMainLog().append("Statistics were saved\n");
+			mGUI.getMainLog().append("\n"+"Statistics were saved\n");
 			break;
 		case Constants.resetModel:
 			mGUI.getController().resetModel();
-			mGUI.getMainLog().append("Model is reset\n");
+			mGUI.getMainLog().append("\n"+"Model is reset\n");
 			break;
 		case Constants.trainersCount:
-			mGUI.getMainLog().append( mGUI.getController().getTrainerCount() + "\n");
+			mGUI.getMainLog().append( "\n"+mGUI.getController().getTrainerCount() + "\n");
 			break;
 		case Constants.help:
 			JOptionPane.showMessageDialog(mGUI, Constants.getHelp(),"HELP!",JOptionPane.PLAIN_MESSAGE);
@@ -54,16 +54,16 @@ public class GUIHelper {
 			break;
 		case Constants.stop:
 			mGUI.stopServer();
-			mGUI.getMainLog().append("server was stopped \n");
+			mGUI.getMainLog().append("\n"+"server was stopped \n");
 			break;
 		case Constants.start:
-			mGUI.getMainLog().append("server is starting, please wait... \n");
+			mGUI.getMainLog().append("\n"+"server is starting, please wait... \n");
 			mGUI.startServer();
-			mGUI.getMainLog().append("server is started \n");
+			mGUI.getMainLog().append("\n"+"server is started \n");
 			break;
 		case Constants.quit:
 			mGUI.stopServer();
-			mGUI.getMainLog().append("server was stopped, quiting... \n");
+			mGUI.getMainLog().append("\n"+"server was stopped, quiting... \n");
 			mGUI.CloseGUI();
 			break;
 		default:

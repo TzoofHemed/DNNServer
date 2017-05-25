@@ -1,7 +1,9 @@
 package tcpConectivity;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -116,12 +118,12 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
      */
     private void runServer() {
         mRun = true;
-        
+        UserManager userManager = null;
         
         try {
             //create a server socket. A server socket waits for requests to come in over the network.
             serverSocket = new ServerSocket(SERVERPORT);
-
+            
             while (mRun) {
                 // create a loop and get all the incoming connections and create users with them
             	
@@ -130,7 +132,7 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
                 //create client socket... the method accept() listens for a connection to be made to this socket and accepts it.
                 Socket client = serverSocket.accept();
 
-                UserManager userManager = new UserManager(client, this);
+                userManager = new UserManager(client, this);
                 // add the new user to the stack of users
                 connectedUsers.add(userManager);
 
@@ -142,7 +144,17 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
 //                sendMessage();
             }
 
-        } catch (Exception e) {
+        }catch(SocketException se){
+        	try {
+				serverSocket.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	connectedUsers.remove(userManager);
+        	System.out.println("S: userManager is disconnected ...");
+        }
+        catch (Exception e) {
             System.out.println("S: Error");
             e.printStackTrace();
         }

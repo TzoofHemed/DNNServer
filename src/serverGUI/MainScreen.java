@@ -5,6 +5,7 @@ import javax.swing.border.Border;
 
 import dnnProcessingUnit.DnnController;
 import dnnUtil.dnnMessage.DnnMessage;
+import dnnUtil.dnnTimer.DnnTimer;
 import tcpConectivity.TCPServer;
 
 import java.awt.Color;
@@ -14,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.net.*;
+import java.sql.Time;
 import java.util.Enumeration;
 
 public class MainScreen extends JFrame{
@@ -22,11 +24,14 @@ public class MainScreen extends JFrame{
 	private JButton stopRxButton;
 	private JButton showIpButton;
 	private JButton saveLogButton;
+	private JButton showLogButton;
+	private JButton saveCSVButton;
 	private JTextField serverCmd;
 	private TCPServer mServer;
 	private JButton sendCmd;
 	private DnnController mDnnController;
 	private GUIHelper mGUIHelper;
+	private DnnTimer mTimer;
 
 
 
@@ -129,13 +134,49 @@ public class MainScreen extends JFrame{
 			public void actionPerformed(ActionEvent ev) {
 				try{
 					mDnnController.saveStatisticsToFile();
+					mainLog.append("\n>>statistics were saved to: "+ mDnnController.getStatisticsPath()+"\n");
 				}catch(Exception e){
+					System.out.println(e.getMessage()+"\n");
 					mainLog.append(">>Error: server wasn't started!\n");
 					System.out.println("server wasn't started!\n");
 				}
 			}
 		});
 		saveLogButton.setBorder(BorderFactory.createLineBorder(Constants.LOG_SCREEN_FONT_COLOR));
+		
+		showLogButton = new JButton(" Show Log ");
+		showLogButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent ev) {
+				try{
+					mDnnController.saveStatisticsToFile();
+					mainLog.append("\n>>gathered clients statistics:\n\n  "+ mDnnController.getTrainingStatistics()+"\n");
+				}catch(Exception e){
+					System.out.println(e.getMessage()+"\n");
+					mainLog.append(">>Error: server wasn't started!\n");
+					System.out.println("server wasn't started!\n");
+				}
+			}
+		});
+		showLogButton.setBorder(BorderFactory.createLineBorder(Constants.LOG_SCREEN_FONT_COLOR));
+
+		saveCSVButton = new JButton(" Save log in CSV");
+		saveCSVButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent ev) {
+				try{
+					mDnnController.saveStatisticsToCSV();
+					mainLog.append("\n>>statistics were saved (in csv) to: "+ mDnnController.getStatisticsPath()+"\n");
+				}catch(Exception e){
+					System.out.println(e.getMessage()+"\n");
+					mainLog.append(">>Error: server wasn't started!\n");
+					System.out.println("server wasn't started!\n");
+				}
+			}
+		});
+		saveCSVButton.setBorder(BorderFactory.createLineBorder(Constants.LOG_SCREEN_FONT_COLOR));
 
 		//add the buttons and the text fields to the panel
 		panelFields.add(mainLog);
@@ -147,6 +188,8 @@ public class MainScreen extends JFrame{
 
 		panelFields3.add(showIpButton);
 		panelFields3.add(saveLogButton);
+		panelFields3.add(showLogButton);
+		panelFields3.add(saveCSVButton);
 
 		panelFields2.setPreferredSize(new Dimension(Constants.CMD_FIELD_W, Constants.CMD_FIELD_H));
 		panelFields.setPreferredSize(new Dimension(Constants.MAIN_LOG_W, Constants.MAIN_LOG_W));
@@ -195,13 +238,13 @@ public class MainScreen extends JFrame{
 			//this method is actually a callback method, because it will run every time when it will be called from
 			//TCPServer class (at while)
 			public void messageReceived(DnnMessage message) { 
-				mainLog.append("\nmessage type: " + message.getMessageType() + " from: "+ message.getSenderName()); 
+				mainLog.append("\n"+System.currentTimeMillis()+": message type: " + message.getMessageType() + " from: "+ message.getSenderName()); 
 			}
 			
 		}, new TCPServer.OnMessageSent() {
 			@Override
 			public void messageSent(String userName, DnnMessage message) { 
-				mainLog.append("\nmessage type: " + message.getMessageType() + " to: "+ userName); 
+				mainLog.append("\n"+System.currentTimeMillis()+": message type: " + message.getMessageType() + " to: "+ userName); 
 			}
 		});
 		mServer.start();
