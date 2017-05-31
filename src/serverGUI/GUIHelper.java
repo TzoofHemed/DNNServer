@@ -35,6 +35,14 @@ public class GUIHelper {
 		case Constants.printTrainerStatistics:
 			mGUI.getMainLog().append("\n"+mGUI.getController().getTrainerStatistics(cmd[1]) + "\n");
 			break;
+		case Constants.setDataSet:
+			mGUI.setDataSet(cmd[1]);
+			mGUI.getMainLog().append("\n"+"set data is set to: "+cmd[1]+"\n");
+			break;
+		case Constants.setDataSize:
+			mGUI.setDataSize(Integer.parseInt(cmd[1]));
+			mGUI.getMainLog().append("\n"+"data size is set to: "+cmd[1]+"\n");
+			break;
 		case Constants.saveStatistics:
 			mGUI.getController().saveStatisticsToFile();
 			mGUI.getMainLog().append("\n"+"Statistics were saved\n");

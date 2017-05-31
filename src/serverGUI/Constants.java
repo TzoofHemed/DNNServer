@@ -35,9 +35,11 @@ public class Constants {
 	public final static String start = "start";
 	public final static String stop = "stop";
 	public final static String quit = "quit";
+	public final static String setDataSize = "s_size";
+	public final static String setDataSet = "s_set";
 	
 	public final static List<String> getAvailableCmds(){
-		List<String> availableCmd = new ArrayList<>(Arrays.asList(printStatistics,saveStatistics,printTrainerStatistics,resetModel,trainersCount,help,ip,start,stop,quit));
+		List<String> availableCmd = new ArrayList<>(Arrays.asList(printStatistics,saveStatistics,printTrainerStatistics,resetModel,trainersCount,help,ip,start,setDataSet,setDataSize,stop,quit));
 		return availableCmd;
 	}
 	
@@ -48,6 +50,8 @@ public class Constants {
 		helpMenu += saveStatistics + "\t\t"+ " - save all training statistics to file"+"\n";
 		helpMenu += resetModel + "\t\t"+ " - resets the model"+"\n";
 		helpMenu += trainersCount + "\t\t"+ " - print all trainers names"+"\n";
+		helpMenu += setDataSize + "\t\t"+ " - set the data size - either 100 or 1000"+"\n";
+		helpMenu += setDataSet + "\t\t"+ " - set the data type: mnist or cifar10"+"\n";
 		helpMenu += ip + "\t\t"+ " - show the server ip"+"\n";
 		helpMenu += start + "\t\t"+ " - start the server"+"\n";
 		helpMenu += stop + "\t\t"+ " - stop the server"+"\n";

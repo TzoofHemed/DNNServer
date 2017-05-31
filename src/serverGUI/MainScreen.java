@@ -32,6 +32,8 @@ public class MainScreen extends JFrame{
 	private DnnController mDnnController;
 	private GUIHelper mGUIHelper;
 	private DnnTimer mTimer;
+	private int mDataSize = 0;
+	private String mDataSet = "";
 
 
 
@@ -55,7 +57,6 @@ public class MainScreen extends JFrame{
 
 		Font mainLogFont = new Font("SansSerif", Font.BOLD, 12);
 		mainLog.setFont(mainLogFont);
-
 
 
 		startRxButton = new JButton(" Start DNN Server ");
@@ -249,11 +250,19 @@ public class MainScreen extends JFrame{
 		});
 		mServer.start();
 
-		// disable the start button and enable the stop one
 		startRxButton.setEnabled(false);
 		stopRxButton.setEnabled(true);
-
-		mDnnController = new DnnController(mServer.getMessageSwitch());
+		
+		if((mDataSet.equals("mnist") || mDataSet.equals("cifar10")) && (mDataSize > 0 && mDataSize < 5001)){
+			mDnnController = new DnnController(mServer.getMessageSwitch(),mDataSize,mDataSet);
+		}else if(mDataSet.equals("mnist") || mDataSet.equals("cifar10")){
+			mDnnController = new DnnController(mServer.getMessageSwitch(),mDataSet);
+		}
+		else if(mDataSize > 0 && mDataSize < 5001){
+			mDnnController = new DnnController(mServer.getMessageSwitch(),mDataSize);
+		}else{
+			mDnnController = new DnnController(mServer.getMessageSwitch());
+		}
 		mDnnController.start();
 	}
 	
@@ -295,6 +304,22 @@ public class MainScreen extends JFrame{
 	
 	public void CloseGUI(){
 		this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+	}
+
+
+	public int getDataSize() {
+		return mDataSize;
+	}
+	public void setDataSize(int mDataSize) {
+		this.mDataSize = mDataSize;
+	}
+
+
+	public String getDataSet() {
+		return mDataSet;
+	}
+	public void setDataSet(String mDataSet) {
+		this.mDataSet = mDataSet;
 	}
 
 

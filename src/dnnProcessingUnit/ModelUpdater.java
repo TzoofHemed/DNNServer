@@ -7,6 +7,7 @@ import dnnUtil.dnnModel.*;
 public class ModelUpdater {
 
 	private LinkedBlockingQueue<DnnWeightsData> mWeightsToUpdate;
+	private LinkedBlockingQueue<DnnDeltaData> mDeltaToUpdate;
 	private int numOfRequeiredWeights;
 	private DnnController mDnnController; 
 
@@ -15,6 +16,12 @@ public class ModelUpdater {
 		numOfRequeiredWeights = 10;		//TODO change to something relative to size of batch/ epoch
 		mDnnController = dnnCotroller;
 	}	
+	
+	public void addDelta(DnnDeltaData delta){
+		mDnnController.getModel().setDeltaData(delta);
+		mDnnController.setModelVersion(mDnnController.getModel().getModelVersion());
+	}
+	
 	/*
 	 * also adds the given delta to the toUpdate queue
 	 */
@@ -32,7 +39,8 @@ public class ModelUpdater {
 		DnnWeightsData updatedWeights= mergeWeights();
 		mDnnController.setDnnWeightsData(updatedWeights);
 		oldModel.setWeightsData(updatedWeights);
-		mDnnController.stepModelVersion();
+		mDnnController.setModelVersion(oldModel.getModelVersion());
+//		mDnnController.stepModelVersion();
 		return true;
 
 	}

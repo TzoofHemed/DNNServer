@@ -1,11 +1,14 @@
 package messagesSwitch;
 
-import dnnUtil.dnnMessage.*;
+import dnnUtil.dnnMessage.DnnMessage;
+import dnnUtil.dnnMessage.DnnModelMessage;
+import dnnUtil.dnnMessage.DnnTrainMessage;
+import dnnUtil.dnnModel.DnnBundle;
+import dnnUtil.dnnModel.DnnDeltaData;
+import dnnUtil.dnnModel.DnnIndex;
 import dnnUtil.dnnModel.DnnModelDescriptor;
-import dnnUtil.dnnModel.DnnTrainingData;
-import dnnUtil.dnnModel.DnnTrainingDescriptor;
-import dnnUtil.dnnModel.DnnWeightsData;
 import dnnUtil.dnnStatistics.DnnStatistics;
+import dnnUtil.dnnStatistics.DnnValidationResult;
 import messagesSwitch.ClientConstants.ClientStatus;
 
 public class InputHandler {
@@ -26,38 +29,67 @@ public class InputHandler {
 			//            managerDelegate.messageReceived(user, null);
 			break;
 		}case READY:{
-			DnnTrainingData trainingData = null;
-			try {
-				trainingData = mMessageSwitch.getController().getNextTrainingData();
-				mMessageSwitch.getController().trainingDataQueueFiller();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-//			DnnTrainingDescriptor trainingDescriptor = mMessageSwitch.getController().getNextTrainingDescriptor();
-//			DnnTrainingData trainingData = mMessageSwitch.getController().getModel().getTrainingData(trainingDescriptor);
-			mMessageSwitch.setUserOutputMessage(clientName, new DnnTrainingDataMessage(trainingData)); 
-			mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.Busy);
+//			DnnIndex trainingIndex = null;
+//
+//			try {
+//				trainingIndex = mMessageSwitch.getController().getNextTrainingIndex();
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//			//			DnnTrainingData trainingData = null;
+//			//			try {
+//
+//			//				trainingData = mMessageSwitch.getController().getNextTrainingData();
+//			//				mMessageSwitch.getController().trainingDataQueueFiller();
+//			//			} catch (InterruptedException e) {
+//			//				e.printStackTrace();
+//			//			}
+//			//			DnnTrainingDescriptor trainingDescriptor = mMessageSwitch.getController().getNextTrainingDescriptor();
+//			//			DnnTrainingData trainingData = mMessageSwitch.getController().getModel().getTrainingData(trainingDescriptor);
+//			//			mMessageSwitch.setUserOutputMessage(clientName, new DnnTrainingDataMessage(trainingData)); 
+//			mMessageSwitch.setUserOutputMessage(clientName, new DnnTrainMessage(trainingIndex));
+//			mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.Busy);
+
+			break;
+		}case DELTA:{
+			DnnDeltaData messageContent = (DnnDeltaData)newMessage.getContent();
+			mMessageSwitch.getController().getModelUpdater().addDelta(messageContent);
+			mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.Ready);
 			
+//			DnnBundle trainingBundle = null;
+//			DnnModelDescriptor modelDescriptor = mMessageSwitch.getController().getModel().getModelDescriptor();
+			DnnMessage message = mMessageSwitch.getController().getNextBundleMessage();
+//			mMessageSwitch.getController().getModelUpdater().weightChecker(messageContent);	
+//			if(mMessageSwitch.getController().getModelVersion() >= mMessageSwitch.getClientManager().getClientModelVersion(clientName) 
+//					+ mMessageSwitch.getController().getUpdateInterval()){
+//				
+//				DnnModelMessage message = new DnnModelMessage("",modelDescriptor);
+//				mMessageSwitch.setUserOutputMessage(clientName, message);
+//			}
+
+			mMessageSwitch.setUserOutputMessage(clientName, message);
+			mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.Busy);
+
 			break;
 		}case WEIGHTS:{
-			DnnWeightsData messageContent = (DnnWeightsData)newMessage.getContent();
-			
-			//TODO update statistics, update clientDataManager
-			mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.Ready);
-			mMessageSwitch.getController().getModelUpdater().weightChecker(messageContent);	
-			if(mMessageSwitch.getController().getModelVersion() == mMessageSwitch.getClientManager().getClientModelVersion(clientName)){
-				DnnTrainingData trainingData = null;
-				try {
-					trainingData = mMessageSwitch.getController().getNextTrainingData();
-					mMessageSwitch.getController().trainingDataQueueFiller();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-//				DnnTrainingDescriptor trainingDescriptor = mMessageSwitch.getController().getNextTrainingDescriptor();
-//				DnnTrainingData trainingData = mMessageSwitch.getController().getModel().getTrainingData(trainingDescriptor);
-				mMessageSwitch.setUserOutputMessage(clientName, new DnnTrainingDataMessage(trainingData)); 
-				mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.Busy);
-			}
+			//			DnnWeightsData messageContent = (DnnWeightsData)newMessage.getContent();
+			//			
+			//			//TODO update statistics, update clientDataManager
+			//			mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.Ready);
+			//			mMessageSwitch.getController().getModelUpdater().weightChecker(messageContent);	
+			//			if(mMessageSwitch.getController().getModelVersion() == mMessageSwitch.getClientManager().getClientModelVersion(clientName)){
+			//				DnnTrainingData trainingData = null;
+			//				try {
+			//					trainingData = mMessageSwitch.getController().getNextTrainingData();
+			//					mMessageSwitch.getController().trainingDataQueueFiller();
+			//				} catch (InterruptedException e) {
+			//					e.printStackTrace();
+			//				}
+			////				DnnTrainingDescriptor trainingDescriptor = mMessageSwitch.getController().getNextTrainingDescriptor();
+			////				DnnTrainingData trainingData = mMessageSwitch.getController().getModel().getTrainingData(trainingDescriptor);
+			//				mMessageSwitch.setUserOutputMessage(clientName, new DnnTrainingDataMessage(trainingData)); 
+			//				mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.Busy);
+			//			}
 			break;
 		}case STRING:{
 			break;
@@ -67,14 +99,18 @@ public class InputHandler {
 		case HELLO:{
 			System.out.println("user: "+ clientName +" is connected!\n");
 			if(clientName != null){
-				DnnModelDescriptor modelDescriptor = mMessageSwitch.getController().getModel().getModelDescriptor();
-				DnnModelMessage message = new DnnModelMessage("",modelDescriptor);
+				
+				DnnMessage message = mMessageSwitch.getController().getNextBundleMessage();				
+//				DnnModelDescriptor modelDescriptor = mMessageSwitch.getController().getModel().getModelDescriptor();
+//				DnnModelMessage message = new DnnModelMessage("",modelDescriptor);
 				mMessageSwitch.getClientManager().addClient(clientName, message);
 				mMessageSwitch.setUserOutputMessage(clientName, message);
 				mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.Initial);
-				mMessageSwitch.getClientManager().setClientModelVersion(clientName, mMessageSwitch.getController().getModelVersion());
+//				mMessageSwitch.getClientManager().setClientModelVersion(clientName, mMessageSwitch.getController().getModelVersion());
 			}
 			break;
+		}case VALIDATIONRESULT:{
+			mMessageSwitch.getController().addValidationResult((DnnValidationResult)newMessage.getContent());
 		}default:
 			break;
 		}
