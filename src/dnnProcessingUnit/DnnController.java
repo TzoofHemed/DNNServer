@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import dnnProcessingUnit.ClientDataManager.SectionStatus;
 import messagesSwitch.MessagesSwitch;
@@ -41,8 +43,8 @@ public class DnnController extends Thread{
 	private String mDataSet;
 	private DnnWeightsData mDnnWeightsData;
 	private int mModelVersion;
-//	private LinkedBlockingDeque<DnnTrainingData> mTrainingDataQueue;
-//	private int QueueSize;
+	//	private LinkedBlockingDeque<DnnTrainingData> mTrainingDataQueue;
+	//	private int QueueSize;
 	private String lastStatPath;
 	private boolean mTrainingDone;
 	private String mDataType;
@@ -51,12 +53,14 @@ public class DnnController extends Thread{
 	private int mValidateInterval;
 	private WorkingMode mMode;
 	private int mNextValidationIndex;
+	private int mDeltaRxCount;
+	private ReentrantLock mDelataLock;
 
-	
+
 	public static enum WorkingMode{
 		TRAIN, VALIDATE, TEST
 	}
-	
+
 	public DnnController(MessagesSwitch messageSwitch){
 		this(messageSwitch,1000,"mnist");
 	}
@@ -76,8 +80,8 @@ public class DnnController extends Thread{
 		mNextEndingSection = mDataSize; 
 		mClientDataManager = new ClientDataManager(this);
 		mModelVersion =0;
-//		QueueSize = 5;
-//		mTrainingDataQueue = new LinkedBlockingDeque<>(QueueSize); 
+		//		QueueSize = 5;
+		//		mTrainingDataQueue = new LinkedBlockingDeque<>(QueueSize); 
 		lastStatPath = "";
 		mTrainingDone = false;
 		mNextTrainingIndex = 1;
@@ -87,12 +91,14 @@ public class DnnController extends Thread{
 		mValidateInterval = 5;
 		mMode = WorkingMode.TRAIN;
 		mNextValidationIndex =1; 
+		mDeltaRxCount = 0;
+		mDelataLock = new ReentrantLock();
 	}
 
 	public void runDnnController(){
 		mMessageSwitch.setController(this);
 		mClientDataManager.Init();
-//		trainigDataQueueInit();
+		//		trainigDataQueueInit();
 		//		while(mRunning){
 		//			
 		//			
@@ -102,31 +108,31 @@ public class DnnController extends Thread{
 		//		}
 	}
 	public void saveServerStatistics(){
-		
-	}
-	
-//	public void trainingDataQueueFiller(){
-//		try {
-//			mTrainingDataQueue.put(mModel.getTrainingData(getNextTrainingDescriptor()));
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-//	}
-//	public void trainigDataQueueInit(){
-//		for(int i=0; i<QueueSize; i++ ){
-//
-//			try {
-//				mTrainingDataQueue.put(mModel.getTrainingData(getNextTrainingDescriptor()));
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//	}
 
-//	public DnnTrainingData getNextTrainingData() throws InterruptedException{
-//
-//		return mTrainingDataQueue.take();
-//	}
+	}
+
+	//	public void trainingDataQueueFiller(){
+	//		try {
+	//			mTrainingDataQueue.put(mModel.getTrainingData(getNextTrainingDescriptor()));
+	//		} catch (InterruptedException e) {
+	//			e.printStackTrace();
+	//		}
+	//	}
+	//	public void trainigDataQueueInit(){
+	//		for(int i=0; i<QueueSize; i++ ){
+	//
+	//			try {
+	//				mTrainingDataQueue.put(mModel.getTrainingData(getNextTrainingDescriptor()));
+	//			} catch (InterruptedException e) {
+	//				e.printStackTrace();
+	//			}
+	//		}
+	//	}
+
+	//	public DnnTrainingData getNextTrainingData() throws InterruptedException{
+	//
+	//		return mTrainingDataQueue.take();
+	//	}
 
 	public DnnIndex getNextTrainingIndex() throws InterruptedException{
 		DnnIndex nextTrainingIndex = new DnnIndex(mDataSize,mDataType,mNextTrainingIndex,mDataSet);
@@ -138,12 +144,12 @@ public class DnnController extends Thread{
 		}
 		return nextTrainingIndex;
 	}
-	
+
 	public void updateModel(){
 		mModelUpdater.rewriteModel(this.mModel);
 		setAllToOutOfDate();
 		updateOutOfDateClients();
-//		forwardOutputMessages();
+		//		forwardOutputMessages();
 	}	
 	public void setDnnWeightsData(DnnWeightsData dnnWeightsData){
 		mDnnWeightsData = dnnWeightsData;
@@ -164,9 +170,9 @@ public class DnnController extends Thread{
 	}
 
 
-//	private void forwardOutputMessages(){
-//		mMessageSwitch.updateOutputMessages();
-//	}
+	//	private void forwardOutputMessages(){
+	//		mMessageSwitch.updateOutputMessages();
+	//	}
 
 	//	private void assignUnemployed(){
 	//		String unemployedName = mMessageSwitch.assignClient();
@@ -240,9 +246,9 @@ public class DnnController extends Thread{
 		return descriptor;
 	}
 	public void trainingFinished(){
-		
+
 	}
-	
+
 
 	public void saveStatisticsToFile(){
 
@@ -268,7 +274,7 @@ public class DnnController extends Thread{
 				out.close();
 			}
 		}
-		
+
 		out = null;
 		fileName = "DnnValidation_" + df.format(dateObj)+ ".txt";
 		if(!outDir.exists()){
@@ -289,9 +295,9 @@ public class DnnController extends Thread{
 			}
 		}
 	}
-	
+
 	public void saveStatisticsToCSV(){
-		
+
 		PrintWriter out = null;
 		DateFormat df = new SimpleDateFormat("ddMMyy_HHmmss");
 		Date dateObj = new Date();
@@ -318,7 +324,7 @@ public class DnnController extends Thread{
 				out.close();
 			}
 		}
-		
+
 		out = null;
 		fileName = "DnnValidation_" + df.format(dateObj)+ ".csv";
 		if(!outDir.exists()){
@@ -400,23 +406,35 @@ public class DnnController extends Thread{
 	}
 	public DnnMessage getNextBundleMessage() {
 		DnnMessage message = null;
-		DnnBundle dnnBundle = null;
-		switch(mMode){
-		case TRAIN:{
-			dnnBundle = getNextTrainingBundle();
-			message = new DnnTrainMessage(dnnBundle);
-			break;
-		}case TEST:{
-			
-			break;
-		}case VALIDATE:{
-			dnnBundle = getNextValidationBundle();
-			message = new DnnValidationMessage("",dnnBundle);
-			break;
-		}default:
-			dnnBundle = getNextTrainingBundle();
-			message = new DnnTrainMessage(dnnBundle);
-			break;
+		mDelataLock.lock();
+		try{		
+			if(mDeltaRxCount >= mValidateInterval){
+				mDeltaRxCount = 0;
+				mMode = WorkingMode.VALIDATE;
+			}else{
+				mDeltaRxCount++;
+			}
+			DnnBundle dnnBundle = null;
+			switch(mMode){
+			case TRAIN:{
+				dnnBundle = getNextTrainingBundle();
+				message = new DnnTrainMessage(dnnBundle);
+				break;
+			}case TEST:{
+
+				break;
+			}case VALIDATE:{
+				dnnBundle = getNextValidationBundle();
+				message = new DnnValidationMessage("",dnnBundle);
+				mMode = WorkingMode.TRAIN;
+				break;
+			}default:
+				dnnBundle = getNextTrainingBundle();
+				message = new DnnTrainMessage(dnnBundle);
+				break;
+			}
+		}finally {
+			mDelataLock.unlock();
 		}
 		return message;
 	}
@@ -427,7 +445,7 @@ public class DnnController extends Thread{
 		return trainingBundle;
 	}
 	private DnnBundle getNextValidationBundle(){
-		DnnIndex dnnIndex = new DnnIndex(mDataSize, "validation", (Integer)mNextValidationIndex, mDataSet);
+		DnnIndex dnnIndex = new DnnIndex(10000, "validate", (Integer)mNextValidationIndex, mDataSet);
 		DnnModelDescriptor modelDescriptor = mModel.getModelDescriptor();
 		DnnBundle trainingBundle =  new DnnBundle(modelDescriptor, dnnIndex);
 		return trainingBundle;
