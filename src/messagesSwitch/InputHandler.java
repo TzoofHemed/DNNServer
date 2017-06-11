@@ -52,8 +52,12 @@ public class InputHandler {
 
 			break;
 		}case DELTA:{
-			DnnDeltaData messageContent = (DnnDeltaData)newMessage.getContent();
+			DnnDeltaData messageContent = (DnnDeltaData)newMessage.getContent();		
+//			float modelVer = (float)mMessageSwitch.getController().getModel().getModelVersion();
+//			float deltaFactor = 1/sqrt(1+(float)(modelVer-messageContent.getModelVersion()));
+//			messageContent.scaleWeights(deltaFactor);
 			mMessageSwitch.getController().getModelUpdater().addDelta(messageContent);
+			
 			mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.Ready);
 			
 //			DnnBundle trainingBundle = null;
@@ -93,10 +97,11 @@ public class InputHandler {
 			break;
 		}case STRING:{
 			break;
-		}case STATISTICS:
+		}case STATISTICS:{
 			mMessageSwitch.getController().addStatistics((DnnStatistics)newMessage.getContent());
+			
 			break;
-		case HELLO:{
+		}case HELLO:{
 			System.out.println("user: "+ clientName +" is connected!\n");
 			if(clientName != null){
 				
@@ -111,6 +116,12 @@ public class InputHandler {
 			break;
 		}case VALIDATIONRESULT:{
 			mMessageSwitch.getController().addValidationResult((DnnValidationResult)newMessage.getContent());
+			mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.Ready);
+
+			DnnMessage message = mMessageSwitch.getController().getNextBundleMessage();
+
+			mMessageSwitch.setUserOutputMessage(clientName, message);
+			mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.Busy);
 		}default:
 			break;
 		}

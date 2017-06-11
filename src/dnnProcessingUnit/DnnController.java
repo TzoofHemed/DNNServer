@@ -21,8 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import dnnProcessingUnit.ClientDataManager.SectionStatus;
@@ -55,6 +53,7 @@ public class DnnController extends Thread{
 	private int mNextValidationIndex;
 	private int mDeltaRxCount;
 	private ReentrantLock mDelataLock;
+	private int mValidationSize = 10000;
 
 
 	public static enum WorkingMode{
@@ -74,6 +73,7 @@ public class DnnController extends Thread{
 		setModel(new DnnModel(mModelParameters));
 		mMessageSwitch = messageSwitch;
 		mControllerStatistics = new ArrayList<>();
+		mValidationResults = new ArrayList<>();
 		setModelUpdater(new ModelUpdater(this));
 		mNextBeginningSection = 0;
 		mDataSize = dataSize;
@@ -88,7 +88,7 @@ public class DnnController extends Thread{
 		mDataType = "train";
 		mDataSet = dataSet;
 		mUpdateInterval = 5;
-		mValidateInterval = 5;
+		mValidateInterval = 100;
 		mMode = WorkingMode.TRAIN;
 		mNextValidationIndex =1; 
 		mDeltaRxCount = 0;
@@ -440,12 +440,17 @@ public class DnnController extends Thread{
 	}
 	private DnnBundle getNextTrainingBundle(){
 		DnnIndex dnnIndex = new DnnIndex(mDataSize, "train", (Integer)mNextTrainingIndex, mDataSet);
+		mNextTrainingIndex++;
+		if(mNextTrainingIndex > mModel.getNumberOfTrainingObjects()/mDataSize){
+			mNextTrainingIndex=1;
+		}
+		
 		DnnModelDescriptor modelDescriptor = mModel.getModelDescriptor();
 		DnnBundle trainingBundle =  new DnnBundle(modelDescriptor, dnnIndex);
 		return trainingBundle;
 	}
 	private DnnBundle getNextValidationBundle(){
-		DnnIndex dnnIndex = new DnnIndex(10000, "validate", (Integer)mNextValidationIndex, mDataSet);
+		DnnIndex dnnIndex = new DnnIndex(mValidationSize, "validate", (Integer)mNextValidationIndex, mDataSet);
 		DnnModelDescriptor modelDescriptor = mModel.getModelDescriptor();
 		DnnBundle trainingBundle =  new DnnBundle(modelDescriptor, dnnIndex);
 		return trainingBundle;

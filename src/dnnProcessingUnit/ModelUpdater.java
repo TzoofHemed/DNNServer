@@ -17,9 +17,14 @@ public class ModelUpdater {
 		mDnnController = dnnCotroller;
 	}	
 	
-	public void addDelta(DnnDeltaData delta){
+	synchronized public void addDelta(DnnDeltaData delta){
 		mDnnController.getModel().setDeltaData(delta);
 		mDnnController.setModelVersion(mDnnController.getModel().getModelVersion());
+//		mDnnController.getModel().loadTrainingData(
+//				"/home/tzoof/workspace/dnnP/DNNServer/src/validate-images.idx3-ubyte.10000.01",
+//				"/home/tzoof/workspace/dnnP/DNNServer/src/validate-labels.idx1-ubyte.10000.01", "mnist");
+//		Float accuracy = mDnnController.getModel().validateModel().getAccuracy();
+//		System.out.println("accuracy: "+ accuracy + "\n");
 	}
 	
 	/*

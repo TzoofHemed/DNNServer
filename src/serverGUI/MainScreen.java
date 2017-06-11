@@ -15,7 +15,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.net.*;
-import java.sql.Time;
 import java.util.Enumeration;
 
 public class MainScreen extends JFrame{
@@ -32,7 +31,8 @@ public class MainScreen extends JFrame{
 	private DnnController mDnnController;
 	private GUIHelper mGUIHelper;
 	private DnnTimer mTimer;
-	private int mDataSize = 0;
+	
+	private int mDataSize = 100;
 	private String mDataSet = "";
 
 
