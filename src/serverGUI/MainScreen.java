@@ -253,6 +253,9 @@ public class MainScreen extends JFrame{
 		startRxButton.setEnabled(false);
 		stopRxButton.setEnabled(true);
 		
+		//configuration:
+		mDataSet = "cifar10";
+
 		if((mDataSet.equals("mnist") || mDataSet.equals("cifar10")) && (mDataSize > 0 && mDataSize < 5001)){
 			mDnnController = new DnnController(mServer.getMessageSwitch(),mDataSize,mDataSet);
 		}else if(mDataSet.equals("mnist") || mDataSet.equals("cifar10")){

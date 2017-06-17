@@ -117,7 +117,8 @@ public class UserManager extends Thread {
             e.printStackTrace();
             try {
             	mRun =false;
-				socket.close();
+            	bufferSender.close();
+            	socket.close();
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -165,6 +166,8 @@ public class UserManager extends Thread {
 			} catch (IOException e) {
 				System.out.println(e.toString());
 				e.printStackTrace();
+				
+				managerDelegate.userDisconnected(this);
 			}
             
         }

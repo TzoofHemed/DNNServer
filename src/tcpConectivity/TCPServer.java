@@ -119,7 +119,7 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
     private void runServer() {
         mRun = true;
         UserManager userManager = null;
-        
+        Socket client =null;
         try {
             //create a server socket. A server socket waits for requests to come in over the network.
             serverSocket = new ServerSocket(SERVERPORT);
@@ -130,7 +130,7 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
                 System.out.println("S: Waiting for a client ...");
 
                 //create client socket... the method accept() listens for a connection to be made to this socket and accepts it.
-                Socket client = serverSocket.accept();
+                client = serverSocket.accept();
 
                 userManager = new UserManager(client, this);
                 // add the new user to the stack of users
@@ -150,10 +150,21 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-        	connectedUsers.remove(userManager);
+        	
         	System.out.println("S: userManager is disconnected ...");
         }
         catch (Exception e) {
+        	try {
+        		connectedUsers.remove(userManager);
+				client = serverSocket.accept();
+                userManager = new UserManager(client, this);
+                connectedUsers.add(userManager);
+                userManager.start();
+                System.out.println("S: New client connected ...");
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
             System.out.println("S: Error");
             e.printStackTrace();
         }
@@ -183,6 +194,7 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
     	
         // remove the user from the list of connected users
         connectedUsers.remove(userManager);
+        userManager.close();
 
     }
 
