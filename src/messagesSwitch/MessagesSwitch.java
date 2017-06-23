@@ -104,7 +104,7 @@ public class MessagesSwitch {
 	}
 
 	public void closeAll() {
-		ArrayList<String> clientNames = mClientManager.getOutOfDateClient();
+		ArrayList<String> clientNames = mClientManager.getClientNames();
 		
 		DnnCloseMessage closeMessage = new DnnCloseMessage("sarbar","close");
 

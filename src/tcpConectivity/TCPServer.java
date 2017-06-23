@@ -86,6 +86,7 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
 
         try {
             serverSocket.close();
+            
         } catch (Exception e) {
             e.printStackTrace();
         }

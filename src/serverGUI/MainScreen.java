@@ -293,7 +293,12 @@ public class MainScreen extends JFrame{
 	public void stopServer() {
 		if (mServer != null) {
 			mDnnController.stopController();
-			
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			mServer.close();
 		}
 
