@@ -2,19 +2,22 @@ package serverGUI;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.text.DefaultCaret;
 
 import dnnProcessingUnit.DnnController;
 import dnnUtil.dnnMessage.DnnMessage;
-import dnnUtil.dnnTimer.DnnTimer;
 import tcpConectivity.TCPServer;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.net.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Enumeration;
 
 public class MainScreen extends JFrame{
@@ -30,15 +33,17 @@ public class MainScreen extends JFrame{
 	private JButton sendCmd;
 	private DnnController mDnnController;
 	private GUIHelper mGUIHelper;
-	private DnnTimer mTimer;
+//	private DnnTimer mTimer;
 	
 	private int mDataSize = 100;
 	private String mDataSet = "";
-
+	public SimpleDateFormat mDateFormat;
 
 
 	public MainScreen(){
+		mDateFormat = new SimpleDateFormat("dd.MM.yy HH:mm:ss");
 		mGUIHelper = new GUIHelper(this);
+		this.setTitle(Constants.PANEL_TITLE);
 		JPanel panelFields = new JPanel();
 		panelFields.setLayout(new BoxLayout(panelFields, BoxLayout.X_AXIS));
 
@@ -54,11 +59,16 @@ public class MainScreen extends JFrame{
 		mainLog.setEditable(false);
 		mainLog.setForeground(Constants.LOG_SCREEN_FONT_COLOR);
 		mainLog.setBackground(Constants.LOG_SCREEN_BACKGROUND_COLOR);
-
-		Font mainLogFont = new Font("SansSerif", Font.BOLD, 12);
+		mainLog.setMargin(new Insets(10, 10, 10, 10));
+		
+		Font mainLogFont = new Font("Courier New", Font.BOLD, 16);
 		mainLog.setFont(mainLogFont);
+		
+		DefaultCaret caret = (DefaultCaret)mainLog.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
-
+		
+		
 		startRxButton = new JButton(" Start DNN Server ");
 		startRxButton.addActionListener(new ActionListener() {
 			@Override
@@ -208,7 +218,9 @@ public class MainScreen extends JFrame{
 		serverCmd.requestFocus();
 		
 		JScrollPane scrollPane = new JScrollPane(mainLog);
+		
 		panelFields.add(scrollPane);
+		
 
 		panelFields.setBackground(Color.DARK_GRAY);
 		panelFields2.setBackground(Color.PINK);
@@ -239,13 +251,22 @@ public class MainScreen extends JFrame{
 			//this method is actually a callback method, because it will run every time when it will be called from
 			//TCPServer class (at while)
 			public void messageReceived(DnnMessage message) { 
-				mainLog.append("\n"+System.currentTimeMillis()+": message type: " + message.getMessageType() + " from: "+ message.getSenderName()); 
+				String senderName = message.getSenderName();
+				senderName = senderName.substring(senderName.lastIndexOf('.')+1);
+				mainLog.append(String.format("\n%s:  message type:  %-16s  from:  %s",
+						mDateFormat.format(new Date(System.currentTimeMillis())),
+						message.getMessageType(),
+						senderName)); 
 			}
 			
 		}, new TCPServer.OnMessageSent() {
 			@Override
 			public void messageSent(String userName, DnnMessage message) { 
-				mainLog.append("\n"+System.currentTimeMillis()+": message type: " + message.getMessageType() + " to: "+ userName); 
+				String clientName = userName.substring(userName.lastIndexOf('.')+1);
+				mainLog.append(String.format("\n%s:  message type:  %-16s  to:    %s",
+						mDateFormat.format(new Date(System.currentTimeMillis())),
+						message.getMessageType(),
+						clientName)); 
 			}
 		});
 		mServer.start();
@@ -271,6 +292,8 @@ public class MainScreen extends JFrame{
 	
 	public void stopServer() {
 		if (mServer != null) {
+			mDnnController.stopController();
+			
 			mServer.close();
 		}
 

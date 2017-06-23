@@ -7,7 +7,7 @@ import dnnUtil.dnnModel.*;
 public class ModelUpdater {
 
 	private LinkedBlockingQueue<DnnWeightsData> mWeightsToUpdate;
-	private LinkedBlockingQueue<DnnDeltaData> mDeltaToUpdate;
+//	private LinkedBlockingQueue<DnnDeltaData> mDeltaToUpdate;
 	private int numOfRequeiredWeights;
 	private DnnController mDnnController; 
 

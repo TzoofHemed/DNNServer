@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Constants {
 	
-	public final static int PANEL_W = 700;
+	public final static int PANEL_W = 1000;
 	public final static int PANEL_H = 700;
 	public final static String PANEL_TITLE = "DNN SERVER";
 	

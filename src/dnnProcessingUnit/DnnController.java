@@ -190,6 +190,9 @@ public class DnnController extends Thread{
 	}
 
 	public void stopController(){
+		saveStatisticsToCSV();
+		saveStatisticsToFile();
+		mMessageSwitch.closeAll();
 	}
 
 	public int getSectionLength(){

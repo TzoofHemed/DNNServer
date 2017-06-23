@@ -2,8 +2,6 @@ package dnnProcessingUnit;
 
 import java.util.ArrayList;
 
-import dnnUtil.dnnTimer.DnnTimer;
-
 public class ClientDataManager {
 	
 	private DnnController mDnnController;
@@ -11,7 +9,7 @@ public class ClientDataManager {
 	private int nextSectionIndex;
 	private ArrayList<SectionFriends> mTestSectionsADT;
 	private int nextTestSectionIndex;
-	private DnnTimer mTimer;
+//	private DnnTimer mTimer;
 	
 	public static enum SectionStatus{
 		SentToTraining, Trained, NotSent
@@ -61,11 +59,11 @@ public class ClientDataManager {
 	}
 	
 	//test
-	private void InitiateTestSectionADT(){
-		for(int index =0; index< mDnnController.getModel().getNumberOfTestingObjects()/mDnnController.getSectionLength(); index++){
-			mTestSectionsADT.add(new SectionFriends(index));
-		}
-	}
+//	private void InitiateTestSectionADT(){
+//		for(int index =0; index< mDnnController.getModel().getNumberOfTestingObjects()/mDnnController.getSectionLength(); index++){
+//			mTestSectionsADT.add(new SectionFriends(index));
+//		}
+//	}
 	public void assignTestSection(String clientName){
 		
 		mTestSectionsADT.get(nextTestSectionIndex).setTrainingClient(clientName);

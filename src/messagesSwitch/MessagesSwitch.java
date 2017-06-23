@@ -3,11 +3,10 @@ package messagesSwitch;
 import java.util.ArrayList;
 
 import dnnProcessingUnit.DnnController;
+import dnnUtil.dnnMessage.DnnCloseMessage;
 import dnnUtil.dnnMessage.DnnMessage;
 import dnnUtil.dnnMessage.DnnModelMessage;
-import dnnUtil.dnnMessage.DnnWeightsMessage;
 import dnnUtil.dnnModel.DnnModelDescriptor;
-import dnnUtil.dnnModel.DnnWeightsData;
 import messagesSwitch.ClientConstants.ClientStatus;
 import tcpConectivity.TCPServer;
 import tcpConectivity.UserManager;
@@ -102,6 +101,17 @@ public class MessagesSwitch {
 			count += number+".  " + clientName + "\n";
 		}
 		return count;		
+	}
+
+	public void closeAll() {
+		ArrayList<String> clientNames = mClientManager.getOutOfDateClient();
+		
+		DnnCloseMessage closeMessage = new DnnCloseMessage("sarbar","close");
+
+		for (String clientName : clientNames) {
+			setUserOutputMessage(clientName, closeMessage);
+			mClientManager.updateClientStatus(clientName,ClientStatus.DeadToMe);
+		}
 	}
 
 	

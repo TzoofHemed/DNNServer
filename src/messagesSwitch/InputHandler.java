@@ -1,12 +1,7 @@
 package messagesSwitch;
 
 import dnnUtil.dnnMessage.DnnMessage;
-import dnnUtil.dnnMessage.DnnModelMessage;
-import dnnUtil.dnnMessage.DnnTrainMessage;
-import dnnUtil.dnnModel.DnnBundle;
 import dnnUtil.dnnModel.DnnDeltaData;
-import dnnUtil.dnnModel.DnnIndex;
-import dnnUtil.dnnModel.DnnModelDescriptor;
 import dnnUtil.dnnStatistics.DnnStatistics;
 import dnnUtil.dnnStatistics.DnnValidationResult;
 import messagesSwitch.ClientConstants.ClientStatus;
@@ -78,7 +73,7 @@ public class InputHandler {
 		}case WEIGHTS:{
 			//			DnnWeightsData messageContent = (DnnWeightsData)newMessage.getContent();
 			//			
-			//			//TODO update statistics, update clientDataManager
+			//			//update statistics, update clientDataManager
 			//			mMessageSwitch.getClientManager().updateClientStatus(clientName, ClientStatus.Ready);
 			//			mMessageSwitch.getController().getModelUpdater().weightChecker(messageContent);	
 			//			if(mMessageSwitch.getController().getModelVersion() == mMessageSwitch.getClientManager().getClientModelVersion(clientName)){

@@ -11,6 +11,7 @@ import javax.swing.SwingUtilities;
 
 import dnnUtil.dnnMessage.DnnHelloMessage;
 import dnnUtil.dnnMessage.DnnMessage;
+import dnnUtil.dnnMessage.DnnMessage.MessageType;
 import messagesSwitch.MessagesSwitch;
 
 
@@ -50,7 +51,7 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
     
     
     public static void main(String[] args) {
-    	System.out.println(System.getProperty("sun.arch.data.model"));
+    	//System.out.println(System.getProperty("sun.arch.data.model"));
         //opens the window where the messages will be received and sent
     	SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -146,12 +147,15 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
 
         }catch(SocketException se){
         	try {
-				serverSocket.close();
+        		if(serverSocket != null){
+        			serverSocket.close();
+        		}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-        	
-        	System.out.println("S: userManager is disconnected ...");
+        	if(userManager != null){
+        		System.out.println("S: "+userManager+" is disconnected ...");
+        	}
         }
         catch (Exception e) {
         	try {
@@ -207,12 +211,21 @@ public class TCPServer extends Thread implements UserManager.UserManagerDelegate
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		if(message.getMessageType()==MessageType.CLOSE){
+			for(UserManager userManager : connectedUsers){
+				if(userManager.getUser().getUsername().equals(fromUser.getUsername())){
+					userDisconnected(userManager);
+					System.out.println(fromUser.getUsername()+" is dead to me.\n");
+				}
+			}
+		}else{
+		
     	messageListener.messageReceived(message);
     	mMessagesSwitch.getClientManager().addInputMessageToClient(fromUser.getUsername(),message);
 //    	System.out.println(fromUser.getUsername()+ ":  " + fromUser.getMessage().getContent());
 //        messageListener.messageReceived("User " + fromUser.getUsername() + " says: " + fromUser.getMessage() + " to user: " + (toUser == null ? "ALL" : toUser.getUsername()));
         // send the message to the other clients
-
+		}
     }
     
     @Override
